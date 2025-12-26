@@ -14,7 +14,7 @@ function InvoiceForm() {
   const isNew = !id;
 
   const [formData, setFormData] = useState({
-    engagementNumber: '',
+    Enqurie: '',
     invoiceNumber: '',
     date: new Date().toISOString().split('T')[0],
     status: 'pending',
@@ -147,13 +147,13 @@ function InvoiceForm() {
 
         const importedItems = data.map((row) => ({
           description: row['Item Description'] || row['Description'] || '',
-          partNumber: row['Part Number'] || row['PartNumber'] || '',
+          partNumber: row['Part Number'] || row['PartNumber'] || row['Part no'] || '',
           made: row['Made'] || '',
-          quantity: row['Quantity'] || '',
-          unitPrice: row['Unit Price'] || row['UnitPrice'] || '',
-          salePrice: row['Sale Price'] || row['SalePrice'] || '',
-          subName: row['Sub Name'] || row['SubName'] || '',
-          uom: row['UOM'] || row['UOM/VUM'] || '',
+          quantity: row['Quantity'] || row['quantity'] || '',
+          unitPrice: row['Unit Price'] || row['UnitPrice'] || row['unit price'] || '',
+          salePrice: row['Sale Price'] || row['SalePrice'] || row['sale price'] || '',
+          subName: row['Sub Name'] || row['SubName'] || row['sub name'] || '',
+          uom: row['UOM'] || row['UOM/VUM'] || row['vum'] || '',
         }));
 
         setFormData((prev) => ({
@@ -176,16 +176,17 @@ function InvoiceForm() {
       return;
     }
 
-    const exportData = formData.items.map((item) => ({
-      'Item Description': item.description,
-      'Part Number': item.partNumber,
+    const exportData = formData.items.map((item, index) => ({
+      'S.No': index + 1,
+      'Description': item.description,
+      'Part no': item.partNumber,
       'Made': item.made,
       'Quantity': item.quantity,
       'Unit Price': item.unitPrice,
-      'Sale Price': item.salePrice,
-      'Sub Name': item.subName,
-      'UOM': item.uom,
       'Total': (parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0),
+      'Sub Name': item.subName,
+      'Sale Price': item.salePrice,
+      'VUM': item.uom,
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -202,57 +203,52 @@ function InvoiceForm() {
     // Company Header
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.text('STOCK DISTRIBUTION SYSTEM', pageWidth / 2, 30, { align: 'center' });
+    doc.text('Company Name', margin, 30);
     
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
-    doc.text('123 Business Street, City, State 12345', pageWidth / 2, 40, { align: 'center' });
-    doc.text('Phone: (555) 123-4567 | Email: info@company.com', pageWidth / 2, 47, { align: 'center' });
+    doc.text('Address', margin, 40);
 
-    let yPos = 60;
+    let yPos = 30;
 
-    // Invoice Details
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('INVOICE', pageWidth / 2, yPos, { align: 'center' });
-    yPos += 15;
-
+    // Invoice Details (right side)
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Invoice Number: ${formData.invoiceNumber || 'N/A'}`, margin, yPos);
-    doc.text(`Date: ${formData.date || 'N/A'}`, pageWidth - margin, yPos, { align: 'right' });
+    doc.text(`Enquire No: ${formData.engagementNumber || 'N/A'}`, pageWidth - 80, yPos);
     yPos += 7;
-    doc.text(`Engagement Number: ${formData.engagementNumber || 'N/A'}`, margin, yPos);
-    doc.text(`Status: ${formData.status?.toUpperCase() || 'PENDING'}`, pageWidth - margin, yPos, { align: 'right' });
-    yPos += 15;
+    doc.text(`Date: ${formData.date || 'N/A'}`, pageWidth - 80, yPos);
+    yPos += 7;
+    doc.text(`Invoice: ${formData.invoiceNumber || 'N/A'}`, pageWidth - 80, yPos);
+    yPos += 7;
+    doc.text(`Status: ${formData.status || 'pending'}`, pageWidth - 80, yPos);
 
-    // Seller and Customer Details
-    const sellerText = `Seller:\n${formData.seller.name || 'N/A'}\n${formData.seller.address || ''}`;
-    const customerText = `Customer:\n${formData.customer.name || 'N/A'}\n${formData.customer.address || ''}`;
-    
-    doc.text(sellerText, margin, yPos);
-    doc.text(customerText, pageWidth - margin - 60, yPos, { align: 'right' });
-    yPos += 30;
+    yPos = 60;
+
+    // Customer Details
+    doc.text(`customer name: ${formData.customer.name || 'N/A'}`, margin, yPos);
+    yPos += 7;
+    doc.text(`Address: ${formData.customer.address || ''}`, margin, yPos);
+    yPos += 15;
 
     // Items Table
-    const tableData = formData.items.map((item) => [
+    const tableData = formData.items.map((item, index) => [
+      index + 1,
       item.description || '',
       item.partNumber || '',
       item.made || '',
       item.quantity || '',
       item.unitPrice || '',
-      item.salePrice || '',
-      item.subName || '',
-      item.uom || '',
       ((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)).toFixed(2),
+      item.subName || '',
+      item.salePrice || '',
+      item.uom || '',
     ]);
 
     doc.autoTable({
       startY: yPos,
-      head: [['Description', 'Part #', 'Made', 'Qty', 'Unit Price', 'Sale Price', 'Sub Name', 'UOM', 'Total']],
+      head: [['s.no', 'Description', 'Part no', 'made', 'quantity', 'unit price', 'total', 'sub name', 'sale price', 'vum']],
       body: tableData,
       styles: { fontSize: 8 },
-      headStyles: { fillColor: [102, 126, 234] },
+      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
       margin: { left: margin, right: margin },
     });
 
@@ -261,12 +257,7 @@ function InvoiceForm() {
     // Total Amount
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text(`Total Amount: $${totalAmount.toFixed(2)}`, pageWidth - margin, finalY, { align: 'right' });
-
-    // Footer
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'italic');
-    doc.text('Thank you for your business!', pageWidth / 2, doc.internal.pageSize.getHeight() - 20, { align: 'center' });
+    doc.text(`Total = ${totalAmount.toFixed(2)}`, pageWidth - margin, finalY, { align: 'right' });
 
     doc.save(`invoice_${formData.invoiceNumber || 'export'}.pdf`);
   };
@@ -274,240 +265,224 @@ function InvoiceForm() {
   return (
     <div className="invoice-form-container">
       <header className="invoice-header">
-        <h1>{isNew ? 'Create New Invoice' : 'Edit Invoice'}</h1>
-        <button onClick={() => navigate('/dashboard')} className="back-button">
-          ← Back to Dashboard
-        </button>
-      </header>
-
-      <div className="invoice-content">
-        <div className="form-section">
-          <h2>Transaction Details</h2>
-          <div className="form-grid">
-            <div className="form-group">
-              <label>Engagement Number</label>
-              <input
-                type="text"
-                value={formData.engagementNumber}
-                onChange={(e) => handleInputChange('engagementNumber', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Invoice Number</label>
-              <input
-                type="text"
-                value={formData.invoiceNumber}
-                onChange={(e) => handleInputChange('invoiceNumber', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Date</label>
-              <input
-                type="date"
-                value={formData.date}
-                onChange={(e) => handleInputChange('date', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Status</label>
-              <select
-                value={formData.status}
-                onChange={(e) => handleInputChange('status', e.target.value)}
-              >
-                <option value="pending">Pending</option>
-                <option value="partial">Partial</option>
-                <option value="closed">Closed</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h2>Seller Details</h2>
-          <div className="form-grid">
-            <div className="form-group">
-              <label>Seller Name</label>
-              <input
-                type="text"
-                value={formData.seller.name}
-                onChange={(e) => handleSellerChange('name', e.target.value)}
-              />
-            </div>
-            <div className="form-group full-width">
-              <label>Seller Address</label>
-              <textarea
-                value={formData.seller.address}
-                onChange={(e) => handleSellerChange('address', e.target.value)}
-                rows="2"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h2>Customer Details</h2>
-          <div className="form-grid">
-            <div className="form-group">
-              <label>Customer Name</label>
-              <input
-                type="text"
-                value={formData.customer.name}
-                onChange={(e) => handleCustomerChange('name', e.target.value)}
-              />
-            </div>
-            <div className="form-group full-width">
-              <label>Customer Address</label>
-              <textarea
-                value={formData.customer.address}
-                onChange={(e) => handleCustomerChange('address', e.target.value)}
-                rows="2"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="form-section">
-          <div className="section-header">
-            <h2>Invoice Items</h2>
-            <div className="section-actions">
-              <label className="import-button">
-                Import Excel
-                <input
-                  type="file"
-                  accept=".xlsx,.xls"
-                  onChange={handleExcelImport}
-                  style={{ display: 'none' }}
-                />
-              </label>
-              <button onClick={handleExcelExport} className="export-button">
-                Export Excel
-              </button>
-              <button onClick={addItem} className="add-item-button">
-                + Add Item
-              </button>
-            </div>
-          </div>
-
-          <div className="table-container">
-            <table className="items-table">
-              <thead>
-                <tr>
-                  <th>Description</th>
-                  <th>Part Number</th>
-                  <th>Made</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Sale Price</th>
-                  <th>Sub Name</th>
-                  <th>UOM</th>
-                  <th>Total</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {formData.items.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="text"
-                        value={item.description}
-                        onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={item.partNumber}
-                        onChange={(e) => handleItemChange(index, 'partNumber', e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={item.made}
-                        onChange={(e) => handleItemChange(index, 'made', e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                        step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={item.unitPrice}
-                        onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
-                        step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={item.salePrice}
-                        onChange={(e) => handleItemChange(index, 'salePrice', e.target.value)}
-                        step="0.01"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={item.subName}
-                        onChange={(e) => handleItemChange(index, 'subName', e.target.value)}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        value={item.uom}
-                        onChange={(e) => handleItemChange(index, 'uom', e.target.value)}
-                      />
-                    </td>
-                    <td className="total-cell">
-                      ${((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)).toFixed(2)}
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => removeItem(index)}
-                        className="remove-button"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {formData.items.length === 0 && (
-                  <tr>
-                    <td colSpan="10" className="empty-message">
-                      No items added. Click "Add Item" to start.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="8" className="total-label">
-                    <strong>Total Amount:</strong>
-                  </td>
-                  <td className="total-amount" colSpan="2">
-                    <strong>${totalAmount.toFixed(2)}</strong>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-
-        <div className="form-actions">
+        <h1>{isNew ? 'Create New Enquire' : 'Edit Invoice'}</h1>
+        <div className="header-actions">
+          <button onClick={() => navigate('/dashboard')} className="back-button">
+            ← Back to Dashboard
+          </button>
           <button onClick={handleSave} className="save-button">
             Save Invoice
+          </button>
+          <label className="import-button">
+            Import Excel
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleExcelImport}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <button onClick={handleExcelExport} className="export-button">
+            Export Excel
           </button>
           <button onClick={handlePDFExport} className="pdf-button">
             Download PDF
           </button>
+        </div>
+      </header>
+
+      <div className="invoice-content">
+        <div className="invoice-template">
+          {/* Top Section: Company Info and Engagement Details */}
+          <div className="top-section">
+            <div className="company-box">
+              <div className="company-name">Company name</div>
+              <div className="company-address">Address</div>
+            </div>
+            
+            <div className="engagement-details">
+              <div className="detail-row">
+                <label>Enquire No:</label>
+                <input
+                  type="text"
+                  value={formData.engagementNumber}
+                  onChange={(e) => handleInputChange('engagementNumber', e.target.value)}
+                  placeholder="Enter enquire number"
+                />
+              </div>
+              <div className="detail-row">
+                <label>Date:</label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => handleInputChange('date', e.target.value)}
+                />
+              </div>
+              
+              <div className="detail-row">
+                <label>status:</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => handleInputChange('status', e.target.value)}
+                >
+                  <option value="pending">pending</option>
+                  <option value="closed">closed</option>
+                  <option value="partial">partial</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Customer Details */}
+          <div className="customer-section">
+            <div className="customer-row">
+              <label>customer name:</label>
+              <input
+                type="text"
+                value={formData.customer.name}
+                onChange={(e) => handleCustomerChange('name', e.target.value)}
+                placeholder="Enter customer name"
+              />
+            </div>
+            <div className="customer-row">
+              <label>Address:</label>
+              <textarea
+                value={formData.customer.address}
+                onChange={(e) => handleCustomerChange('address', e.target.value)}
+                rows="2"
+                placeholder="Enter customer address"
+              />
+            </div>
+          </div>
+
+          {/* Items Table */}
+          <div className="table-section">
+            <div className="table-actions">
+              <button onClick={addItem} className="add-item-button">
+                + Add Item
+              </button>
+            </div>
+            
+            <div className="table-container">
+              <table className="items-table">
+                <thead>
+                  <tr>
+                    <th>s.no</th>
+                    <th>Description</th>
+                    <th>Part no</th>
+                    <th>made</th>
+                    <th>quantity</th>
+                    <th>UOM</th>
+                    <th>unit price</th>
+                    <th>total</th>
+                    <th>sub name</th>
+                    <th>sub price</th>
+                    
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.items.map((item, index) => (
+                    <tr key={index}>
+                      <td className="sno-cell">{index + 1}</td>
+                      <td>
+                        <input
+                          type="text"
+                          value={item.description}
+                          onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                          placeholder="Description"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={item.partNumber}
+                          onChange={(e) => handleItemChange(index, 'partNumber', e.target.value)}
+                          placeholder="Part no"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={item.made}
+                          onChange={(e) => handleItemChange(index, 'made', e.target.value)}
+                          placeholder="Made"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                          step="0.01"
+                          placeholder="0"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          value={item.unitPrice}
+                          onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
+                          step="0.01"
+                          placeholder="0.00"
+                        />
+                      </td>
+                      <td className="total-cell">
+                        {((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)).toFixed(2)}
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={item.subName}
+                          onChange={(e) => handleItemChange(index, 'subName', e.target.value)}
+                          placeholder="Sub name"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          value={item.salePrice}
+                          onChange={(e) => handleItemChange(index, 'salePrice', e.target.value)}
+                          step="0.01"
+                          placeholder="0.00"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={item.uom}
+                          onChange={(e) => handleItemChange(index, 'uom', e.target.value)}
+                          placeholder="UOM"
+                        />
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => removeItem(index)}
+                          className="remove-button"
+                          title="Remove item"
+                        >
+                          ×
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {formData.items.length === 0 && (
+                    <tr>
+                      <td colSpan="11" className="empty-message">
+                        No items added. Click "+ Add Item" to start.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Total */}
+            <div className="total-section">
+              <span className="total-label">Total =</span>
+              <span className="total-value">{totalAmount.toFixed(2)}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -515,4 +490,3 @@ function InvoiceForm() {
 }
 
 export default InvoiceForm;
-
