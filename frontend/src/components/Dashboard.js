@@ -7,19 +7,19 @@ import './Dashboard.css';
 function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [invoices, setInvoices] = useState([]);
+  const [enquiries, setEnquiries] = useState([]);
 
   useEffect(() => {
     if (user) {
-      const userInvoices = storageService.getInvoices(user.id);
-      setInvoices(userInvoices);
+      const userEnquiries = storageService.getEnquiries(user.id);
+      setEnquiries(userEnquiries);
     }
   }, [user]);
 
-  const handleDelete = (invoiceId) => {
-    if (window.confirm('Are you sure you want to delete this invoice?')) {
-      storageService.deleteInvoice(user.id, invoiceId);
-      setInvoices(storageService.getInvoices(user.id));
+  const handleDelete = (enquiryId) => {
+    if (window.confirm('Are you sure you want to delete this enquiry?')) {
+      storageService.deleteEnquiry(user.id, enquiryId);
+      setEnquiries(storageService.getEnquiries(user.id));
     }
   };
 
@@ -51,25 +51,25 @@ function Dashboard() {
       <div className="dashboard-content">
         <div className="dashboard-actions">
           <button
-            onClick={() => navigate('/invoice/new')}
+            onClick={() => navigate('/enquiry/new')}
             className="primary-button"
           >
-            + Create New Invoice
+            + Create New Enquiry
           </button>
         </div>
 
-        <div className="invoices-section">
-          <h2>Your Invoices</h2>
-          {invoices.length === 0 ? (
+        <div className="enquiries-section">
+          <h2>Your Enquiries</h2>
+          {enquiries.length === 0 ? (
             <div className="empty-state">
-              <p>No invoices yet. Create your first invoice to get started.</p>
+              <p>No enquiries yet. Create your first enquiry to get started.</p>
             </div>
           ) : (
-            <div className="invoices-table-container">
-              <table className="invoices-table">
+            <div className="enquiries-table-container">
+              <table className="enquiries-table">
                 <thead>
                   <tr>
-                    <th>Invoice Number</th>
+                    <th>Enquiry Number</th>
                     <th>Date</th>
                     <th>Customer</th>
                     <th>Status</th>
@@ -78,29 +78,29 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {invoices.map((invoice) => (
-                    <tr key={invoice.id}>
-                      <td>{invoice.invoiceNumber || 'N/A'}</td>
-                      <td>{invoice.date || 'N/A'}</td>
-                      <td>{invoice.customer?.name || 'N/A'}</td>
+                  {enquiries.map((enquiry) => (
+                    <tr key={enquiry.id}>
+                      <td>{enquiry.enquiryNumber || 'N/A'}</td>
+                      <td>{enquiry.date || 'N/A'}</td>
+                      <td>{enquiry.customer?.name || 'N/A'}</td>
                       <td>
                         <span
                           className="status-badge"
-                          style={{ backgroundColor: getStatusColor(invoice.status) }}
+                          style={{ backgroundColor: getStatusColor(enquiry.status) }}
                         >
-                          {invoice.status || 'pending'}
+                          {enquiry.status || 'pending'}
                         </span>
                       </td>
-                      <td>${invoice.totalAmount?.toFixed(2) || '0.00'}</td>
+                      <td>${enquiry.totalAmount?.toFixed(2) || '0.00'}</td>
                       <td>
                         <button
-                          onClick={() => navigate(`/invoice/${invoice.id}`)}
+                          onClick={() => navigate(`/enquiry/${enquiry.id}`)}
                           className="action-button edit"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(invoice.id)}
+                          onClick={() => handleDelete(enquiry.id)}
                           className="action-button delete"
                         >
                           Delete

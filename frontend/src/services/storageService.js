@@ -3,7 +3,7 @@
 const STORAGE_KEYS = {
   USERS: 'stock_distribution_users',
   CURRENT_USER: 'stock_distribution_current_user',
-  INVOICES: 'stock_distribution_invoices',
+  ENQUIRIES: 'stock_distribution_enquiries',
   CUSTOMERS: 'stock_distribution_customers',
   SELLERS: 'stock_distribution_sellers',
 };
@@ -34,40 +34,40 @@ class StorageService {
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
   }
 
-  // Invoice management
-  getInvoices(userId) {
-    const invoices = localStorage.getItem(STORAGE_KEYS.INVOICES);
-    const allInvoices = invoices ? JSON.parse(invoices) : [];
-    return allInvoices.filter(inv => inv.userId === userId);
+  // Enquiry management
+  getEnquiries(userId) {
+    const enquiries = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
+    const allEnquiries = enquiries ? JSON.parse(enquiries) : [];
+    return allEnquiries.filter(enq => enq.userId === userId);
   }
 
-  getInvoice(userId, invoiceId) {
-    const invoices = this.getInvoices(userId);
-    return invoices.find(inv => inv.id === invoiceId);
+  getEnquiry(userId, enquiryId) {
+    const enquiries = this.getEnquiries(userId);
+    return enquiries.find(enq => enq.id === enquiryId);
   }
 
-  saveInvoice(invoice) {
-    const invoices = localStorage.getItem(STORAGE_KEYS.INVOICES);
-    const allInvoices = invoices ? JSON.parse(invoices) : [];
+  saveEnquiry(enquiry) {
+    const enquiries = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
+    const allEnquiries = enquiries ? JSON.parse(enquiries) : [];
     
-    const existingIndex = allInvoices.findIndex(inv => inv.id === invoice.id);
+    const existingIndex = allEnquiries.findIndex(enq => enq.id === enquiry.id);
     
     if (existingIndex >= 0) {
-      allInvoices[existingIndex] = invoice;
+      allEnquiries[existingIndex] = enquiry;
     } else {
-      allInvoices.push(invoice);
+      allEnquiries.push(enquiry);
     }
     
-    localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(allInvoices));
+    localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(allEnquiries));
   }
 
-  deleteInvoice(userId, invoiceId) {
-    const invoices = localStorage.getItem(STORAGE_KEYS.INVOICES);
-    const allInvoices = invoices ? JSON.parse(invoices) : [];
-    const filtered = allInvoices.filter(
-      inv => !(inv.userId === userId && inv.id === invoiceId)
+  deleteEnquiry(userId, enquiryId) {
+    const enquiries = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
+    const allEnquiries = enquiries ? JSON.parse(enquiries) : [];
+    const filtered = allEnquiries.filter(
+      enq => !(enq.userId === userId && enq.id === enquiryId)
     );
-    localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(filtered));
+    localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(filtered));
   }
 
   // Customer management

@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import InvoiceForm from './components/InvoiceForm';
+import EnquiryForm from './components/EnquiryForm';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
 
@@ -24,18 +24,18 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/invoice/new"
+        path="/enquiry/new"
         element={
           <PrivateRoute>
-            <InvoiceForm />
+            <EnquiryForm />
           </PrivateRoute>
         }
       />
       <Route
-        path="/invoice/:id"
+        path="/enquiry/:id"
         element={
           <PrivateRoute>
-            <InvoiceForm />
+            <EnquiryForm />
           </PrivateRoute>
         }
       />

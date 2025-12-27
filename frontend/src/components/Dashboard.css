@@ -64,14 +64,14 @@
   background: #5568d3;
 }
 
-.invoices-section {
+.enquiries-section {
   background: white;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.invoices-section h2 {
+.enquiries-section h2 {
   color: #333;
   margin-bottom: 1.5rem;
 }
@@ -82,20 +82,20 @@
   color: #999;
 }
 
-.invoices-table-container {
+.enquiries-table-container {
   overflow-x: auto;
 }
 
-.invoices-table {
+.enquiries-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.invoices-table thead {
+.enquiries-table thead {
   background: #f8f9fa;
 }
 
-.invoices-table th {
+.enquiries-table th {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
@@ -103,13 +103,13 @@
   border-bottom: 2px solid #dee2e6;
 }
 
-.invoices-table td {
+.enquiries-table td {
   padding: 1rem;
   border-bottom: 1px solid #dee2e6;
   color: #666;
 }
 
-.invoices-table tbody tr:hover {
+.enquiries-table tbody tr:hover {
   background: #f8f9fa;
 }
 

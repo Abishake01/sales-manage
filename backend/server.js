@@ -17,7 +17,7 @@ db.init();
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/invoices', require('./routes/invoices'));
+app.use('/api/enquiries', require('./routes/enquiries'));
 app.use('/api/customers', require('./routes/customers'));
 app.use('/api/sellers', require('./routes/sellers'));
 

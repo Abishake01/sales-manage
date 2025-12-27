@@ -58,9 +58,9 @@ function init() {
       )
     `);
 
-    // Invoices table
+    // Enquiries table
     database.run(`
-      CREATE TABLE IF NOT EXISTS invoices (
+      CREATE TABLE IF NOT EXISTS enquiries (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
         engagement_number TEXT,
@@ -78,11 +78,11 @@ function init() {
       )
     `);
 
-    // Invoice items table
+    // Enquiry items table
     database.run(`
-      CREATE TABLE IF NOT EXISTS invoice_items (
+      CREATE TABLE IF NOT EXISTS enquiry_items (
         id TEXT PRIMARY KEY,
-        invoice_id TEXT NOT NULL,
+        enquiry_id TEXT NOT NULL,
         description TEXT,
         part_number TEXT,
         made TEXT,
@@ -93,7 +93,7 @@ function init() {
         uom TEXT,
         total REAL DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
+        FOREIGN KEY (enquiry_id) REFERENCES enquiries(id) ON DELETE CASCADE
       )
     `);
 

@@ -5,17 +5,17 @@ import { storageService } from '../services/storageService';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import './InvoiceForm.css';
+import './EnquiryForm.css';
 
-function InvoiceForm() {
+function EnquiryForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const isNew = !id;
 
   const [formData, setFormData] = useState({
-    Enqurie: '',
-    invoiceNumber: '',
+    engagementNumber: '',
+    enquiryNumber: '',
     date: new Date().toISOString().split('T')[0],
     status: 'pending',
     seller: {
@@ -33,9 +33,9 @@ function InvoiceForm() {
 
   useEffect(() => {
     if (!isNew && user) {
-      const invoice = storageService.getInvoice(user.id, id);
-      if (invoice) {
-        setFormData(invoice);
+      const enquiry = storageService.getEnquiry(user.id, id);
+      if (enquiry) {
+        setFormData(enquiry);
       }
     }
   }, [id, isNew, user]);
@@ -120,7 +120,7 @@ function InvoiceForm() {
   const handleSave = () => {
     if (!user) return;
 
-    const invoice = {
+    const enquiry = {
       id: isNew ? Date.now().toString() : id,
       userId: user.id,
       ...formData,
@@ -128,8 +128,8 @@ function InvoiceForm() {
       updatedAt: new Date().toISOString(),
     };
 
-    storageService.saveInvoice(invoice);
-    alert('Invoice saved successfully!');
+    storageService.saveEnquiry(enquiry);
+    alert('Enquiry saved successfully!');
     navigate('/dashboard');
   };
 
@@ -191,8 +191,8 @@ function InvoiceForm() {
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Invoice Items');
-    XLSX.writeFile(workbook, `invoice_${formData.invoiceNumber || 'export'}.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Enquiry Items');
+    XLSX.writeFile(workbook, `enquiry_${formData.enquiryNumber || 'export'}.xlsx`);
   };
 
   const handlePDFExport = () => {
@@ -211,13 +211,13 @@ function InvoiceForm() {
 
     let yPos = 30;
 
-    // Invoice Details (right side)
+    // Enquiry Details (right side)
     doc.setFontSize(10);
-    doc.text(`Enquire No: ${formData.engagementNumber || 'N/A'}`, pageWidth - 80, yPos);
+    doc.text(`Enquiry No: ${formData.engagementNumber || 'N/A'}`, pageWidth - 80, yPos);
     yPos += 7;
     doc.text(`Date: ${formData.date || 'N/A'}`, pageWidth - 80, yPos);
     yPos += 7;
-    doc.text(`Invoice: ${formData.invoiceNumber || 'N/A'}`, pageWidth - 80, yPos);
+    doc.text(`Enquiry: ${formData.enquiryNumber || 'N/A'}`, pageWidth - 80, yPos);
     yPos += 7;
     doc.text(`Status: ${formData.status || 'pending'}`, pageWidth - 80, yPos);
 
@@ -259,19 +259,19 @@ function InvoiceForm() {
     doc.setFont('helvetica', 'bold');
     doc.text(`Total = ${totalAmount.toFixed(2)}`, pageWidth - margin, finalY, { align: 'right' });
 
-    doc.save(`invoice_${formData.invoiceNumber || 'export'}.pdf`);
+    doc.save(`enquiry_${formData.enquiryNumber || 'export'}.pdf`);
   };
 
   return (
-    <div className="invoice-form-container">
-      <header className="invoice-header">
-        <h1>{isNew ? 'Create New Enquire' : 'Edit Invoice'}</h1>
+    <div className="enquiry-form-container">
+      <header className="enquiry-header">
+        <h1>{isNew ? 'Create New Enquiry' : 'Edit Enquiry'}</h1>
         <div className="header-actions">
           <button onClick={() => navigate('/dashboard')} className="back-button">
             ← Back to Dashboard
           </button>
           <button onClick={handleSave} className="save-button">
-            Save Invoice
+            Save Enquiry
           </button>
           <label className="import-button">
             Import Excel
@@ -291,8 +291,8 @@ function InvoiceForm() {
         </div>
       </header>
 
-      <div className="invoice-content">
-        <div className="invoice-template">
+      <div className="enquiry-content">
+        <div className="enquiry-template">
           {/* Top Section: Company Info and Engagement Details */}
           <div className="top-section">
             <div className="company-box">
@@ -489,4 +489,4 @@ function InvoiceForm() {
   );
 }
 
-export default InvoiceForm;
+export default EnquiryForm;

@@ -23,7 +23,7 @@
 
 3. **Start Using the App**
    - Register a new account
-   - Create invoices
+   - Create enquiries
    - All data is stored in your browser's localStorage
 
 ### Option 2: Full Stack Mode (With Backend)
@@ -61,13 +61,13 @@
 ## First Steps
 
 1. **Register/Login**: Create an account or login with existing credentials
-2. **Create Invoice**: Click "Create New Invoice" from the dashboard
+2. **Create Enquiry**: Click "Create New Enquiry" from the dashboard
 3. **Fill Details**: 
-   - Enter transaction details (engagement number, invoice number, date, status)
+   - Enter transaction details (engagement number, enquiry number, date, status)
    - Add seller and customer information
-   - Add invoice items using the table
+   - Add enquiry items using the table
 4. **Import Excel**: Click "Import Excel" to bulk import items
-5. **Export**: Use "Export Excel" or "Download PDF" to save your invoice
+5. **Export**: Use "Export Excel" or "Download PDF" to save your enquiry
 
 ## Excel Import Format
 

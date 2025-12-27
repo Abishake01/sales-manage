@@ -3,128 +3,128 @@ const router = express.Router();
 const { getDb } = require('../database/db');
 const { authenticateToken } = require('./auth');
 
-// Get all invoices for the authenticated user
+// Get all enquiries for the authenticated user
 router.get('/', authenticateToken, (req, res) => {
   const db = getDb();
   const userId = req.user.id;
 
   db.all(
-    `SELECT i.*, 
+    `SELECT e.*, 
             s.name as seller_name, s.address as seller_address,
             c.name as customer_name, c.address as customer_address
-     FROM invoices i
-     LEFT JOIN sellers s ON i.seller_id = s.id
-     LEFT JOIN customers c ON i.customer_id = c.id
-     WHERE i.user_id = ?
-     ORDER BY i.created_at DESC`,
+     FROM enquiries e
+     LEFT JOIN sellers s ON e.seller_id = s.id
+     LEFT JOIN customers c ON e.customer_id = c.id
+     WHERE e.user_id = ?
+     ORDER BY e.created_at DESC`,
     [userId],
-    (err, invoices) => {
+    (err, enquiries) => {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      // Get items for each invoice
-      const invoicePromises = invoices.map((invoice) => {
+      // Get items for each enquiry
+      const enquiryPromises = enquiries.map((enquiry) => {
         return new Promise((resolve, reject) => {
           db.all(
-            'SELECT * FROM invoice_items WHERE invoice_id = ?',
-            [invoice.id],
+            'SELECT * FROM enquiry_items WHERE enquiry_id = ?',
+            [enquiry.id],
             (err, items) => {
               if (err) {
                 reject(err);
               } else {
-                invoice.items = items;
-                invoice.seller = {
-                  name: invoice.seller_name,
-                  address: invoice.seller_address,
+                enquiry.items = items;
+                enquiry.seller = {
+                  name: enquiry.seller_name,
+                  address: enquiry.seller_address,
                 };
-                invoice.customer = {
-                  name: invoice.customer_name,
-                  address: invoice.customer_address,
+                enquiry.customer = {
+                  name: enquiry.customer_name,
+                  address: enquiry.customer_address,
                 };
-                delete invoice.seller_name;
-                delete invoice.seller_address;
-                delete invoice.customer_name;
-                delete invoice.customer_address;
-                resolve(invoice);
+                delete enquiry.seller_name;
+                delete enquiry.seller_address;
+                delete enquiry.customer_name;
+                delete enquiry.customer_address;
+                resolve(enquiry);
               }
             }
           );
         });
       });
 
-      Promise.all(invoicePromises)
-        .then((invoicesWithItems) => {
-          res.json(invoicesWithItems);
+      Promise.all(enquiryPromises)
+        .then((enquiriesWithItems) => {
+          res.json(enquiriesWithItems);
         })
         .catch((error) => {
-          res.status(500).json({ error: 'Error fetching invoice items' });
+          res.status(500).json({ error: 'Error fetching enquiry items' });
         });
     }
   );
 });
 
-// Get a single invoice
+// Get a single enquiry
 router.get('/:id', authenticateToken, (req, res) => {
   const db = getDb();
   const userId = req.user.id;
-  const invoiceId = req.params.id;
+  const enquiryId = req.params.id;
 
   db.get(
-    `SELECT i.*, 
+    `SELECT e.*, 
             s.name as seller_name, s.address as seller_address,
             c.name as customer_name, c.address as customer_address
-     FROM invoices i
-     LEFT JOIN sellers s ON i.seller_id = s.id
-     LEFT JOIN customers c ON i.customer_id = c.id
-     WHERE i.id = ? AND i.user_id = ?`,
-    [invoiceId, userId],
-    (err, invoice) => {
+     FROM enquiries e
+     LEFT JOIN sellers s ON e.seller_id = s.id
+     LEFT JOIN customers c ON e.customer_id = c.id
+     WHERE e.id = ? AND e.user_id = ?`,
+    [enquiryId, userId],
+    (err, enquiry) => {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      if (!invoice) {
-        return res.status(404).json({ error: 'Invoice not found' });
+      if (!enquiry) {
+        return res.status(404).json({ error: 'Enquiry not found' });
       }
 
       db.all(
-        'SELECT * FROM invoice_items WHERE invoice_id = ?',
-        [invoiceId],
+        'SELECT * FROM enquiry_items WHERE enquiry_id = ?',
+        [enquiryId],
         (err, items) => {
           if (err) {
-            return res.status(500).json({ error: 'Error fetching invoice items' });
+            return res.status(500).json({ error: 'Error fetching enquiry items' });
           }
 
-          invoice.items = items;
-          invoice.seller = {
-            name: invoice.seller_name,
-            address: invoice.seller_address,
+          enquiry.items = items;
+          enquiry.seller = {
+            name: enquiry.seller_name,
+            address: enquiry.seller_address,
           };
-          invoice.customer = {
-            name: invoice.customer_name,
-            address: invoice.customer_address,
+          enquiry.customer = {
+            name: enquiry.customer_name,
+            address: enquiry.customer_address,
           };
-          delete invoice.seller_name;
-          delete invoice.seller_address;
-          delete invoice.customer_name;
-          delete invoice.customer_address;
+          delete enquiry.seller_name;
+          delete enquiry.seller_address;
+          delete enquiry.customer_name;
+          delete enquiry.customer_address;
 
-          res.json(invoice);
+          res.json(enquiry);
         }
       );
     }
   );
 });
 
-// Create or update invoice
+// Create or update enquiry
 router.post('/', authenticateToken, (req, res) => {
   const db = getDb();
   const userId = req.user.id;
   const {
     id,
     engagementNumber,
-    invoiceNumber,
+    enquiryNumber,
     date,
     status,
     seller,
@@ -156,17 +156,17 @@ router.post('/', authenticateToken, (req, res) => {
       );
     }
 
-    // Save invoice
-    const invoiceId = id || `invoice_${Date.now()}`;
+    // Save enquiry
+    const enquiryId = id || `enquiry_${Date.now()}`;
     db.run(
-      `INSERT OR REPLACE INTO invoices 
-       (id, user_id, engagement_number, invoice_number, date, status, seller_id, customer_id, total_amount, updated_at)
+      `INSERT OR REPLACE INTO enquiries 
+       (id, user_id, engagement_number, enquiry_number, date, status, seller_id, customer_id, total_amount, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
       [
-        invoiceId,
+        enquiryId,
         userId,
         engagementNumber || null,
-        invoiceNumber || null,
+        enquiryNumber || null,
         date || null,
         status || 'pending',
         sellerId,
@@ -176,11 +176,11 @@ router.post('/', authenticateToken, (req, res) => {
       function (err) {
         if (err) {
           db.run('ROLLBACK');
-          return res.status(500).json({ error: 'Error saving invoice' });
+          return res.status(500).json({ error: 'Error saving enquiry' });
         }
 
         // Delete existing items
-        db.run('DELETE FROM invoice_items WHERE invoice_id = ?', [invoiceId], (err) => {
+        db.run('DELETE FROM enquiry_items WHERE enquiry_id = ?', [enquiryId], (err) => {
           if (err) {
             db.run('ROLLBACK');
             return res.status(500).json({ error: 'Error deleting old items' });
@@ -196,12 +196,12 @@ router.post('/', authenticateToken, (req, res) => {
                 const total = quantity * unitPrice;
 
                 db.run(
-                  `INSERT INTO invoice_items 
-                   (id, invoice_id, description, part_number, made, quantity, unit_price, sale_price, sub_name, uom, total)
+                  `INSERT INTO enquiry_items 
+                   (id, enquiry_id, description, part_number, made, quantity, unit_price, sale_price, sub_name, uom, total)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                   [
                     itemId,
-                    invoiceId,
+                    enquiryId,
                     item.description || '',
                     item.partNumber || '',
                     item.made || '',
@@ -223,15 +223,15 @@ router.post('/', authenticateToken, (req, res) => {
             Promise.all(itemPromises)
               .then(() => {
                 db.run('COMMIT');
-                res.json({ success: true, id: invoiceId });
+                res.json({ success: true, id: enquiryId });
               })
               .catch((err) => {
                 db.run('ROLLBACK');
-                res.status(500).json({ error: 'Error saving invoice items' });
+                res.status(500).json({ error: 'Error saving enquiry items' });
               });
           } else {
             db.run('COMMIT');
-            res.json({ success: true, id: invoiceId });
+            res.json({ success: true, id: enquiryId });
           }
         });
       }
@@ -239,22 +239,22 @@ router.post('/', authenticateToken, (req, res) => {
   });
 });
 
-// Delete invoice
+// Delete enquiry
 router.delete('/:id', authenticateToken, (req, res) => {
   const db = getDb();
   const userId = req.user.id;
-  const invoiceId = req.params.id;
+  const enquiryId = req.params.id;
 
   db.run(
-    'DELETE FROM invoices WHERE id = ? AND user_id = ?',
-    [invoiceId, userId],
+    'DELETE FROM enquiries WHERE id = ? AND user_id = ?',
+    [enquiryId, userId],
     function (err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
 
       if (this.changes === 0) {
-        return res.status(404).json({ error: 'Invoice not found' });
+        return res.status(404).json({ error: 'Enquiry not found' });
       }
 
       res.json({ success: true });

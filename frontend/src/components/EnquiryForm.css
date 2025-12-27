@@ -1,9 +1,9 @@
-.invoice-form-container {
+.enquiry-form-container {
   min-height: 100vh;
   background-color: #f5f5f5;
 }
 
-.invoice-header {
+.enquiry-header {
   background: white;
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -14,7 +14,7 @@
   gap: 1rem;
 }
 
-.invoice-header h1 {
+.enquiry-header h1 {
   color: #333;
   font-size: 1.5rem;
 }
@@ -85,13 +85,13 @@
   background: #c0392b;
 }
 
-.invoice-content {
+.enquiry-content {
   max-width: 1400px;
   margin: 2rem auto;
   padding: 0 2rem;
 }
 
-.invoice-template {
+.enquiry-template {
   background: white;
   padding: 2rem;
   border-radius: 8px;
@@ -359,7 +359,7 @@
 }
 
 @media (max-width: 768px) {
-  .invoice-header {
+  .enquiry-header {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -403,14 +403,14 @@
 }
 
 @media print {
-  .invoice-header,
+  .enquiry-header,
   .header-actions,
   .table-actions,
   .remove-button {
     display: none;
   }
   
-  .invoice-template {
+  .enquiry-template {
     box-shadow: none;
   }
 }

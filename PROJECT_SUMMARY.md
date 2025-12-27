@@ -1,8 +1,8 @@
 # Project Summary
 
-## Stock Distribution and Invoice Management System
+## Stock Distribution and Enquiry Management System
 
-This is a complete full-stack web application for managing stock distribution, invoices, and seller-customer relationships.
+This is a complete full-stack web application for managing stock distribution, enquiries, and seller-customer relationships.
 
 ## What Has Been Built
 
@@ -13,13 +13,13 @@ This is a complete full-stack web application for managing stock distribution, i
 - Protected routes
 
 ✅ **Dashboard**
-- View all invoices
-- Create new invoices
-- Edit/delete existing invoices
+- View all enquiries
+- Create new enquiries
+- Edit/delete existing enquiries
 - Status indicators (pending, partial, closed)
 
-✅ **Invoice Form**
-- Transaction metadata (engagement number, invoice number, date, status)
+✅ **Enquiry Form**
+- Transaction metadata (engagement number, enquiry number, date, status)
 - Seller details (name, address)
 - Customer details (name, address)
 - Dynamic editable item table with:
@@ -30,13 +30,13 @@ This is a complete full-stack web application for managing stock distribution, i
 
 ✅ **Excel Import/Export**
 - Import items from Excel files
-- Export current invoice data to Excel
+- Export current enquiry data to Excel
 - Automatic column mapping
 
 ✅ **PDF Generation**
-- Professional invoice layout
+- Professional enquiry layout
 - Company header
-- Complete invoice details
+- Complete enquiry details
 - Itemized table with totals
 - Downloadable PDF files
 
@@ -48,15 +48,15 @@ This is a complete full-stack web application for managing stock distribution, i
 ### Backend (Express.js)
 ✅ **REST API**
 - Authentication endpoints (register, login)
-- Invoice CRUD operations
+- Enquiry CRUD operations
 - Customer management
 - Seller management
 - JWT-based authentication
 
 ✅ **Database (SQLite)**
 - Users table
-- Invoices table
-- Invoice items table
+- Enquiries table
+- Enquiry items table
 - Customers table
 - Sellers table
 - Foreign key relationships
@@ -77,7 +77,7 @@ ashok/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Dashboard.js/css
-│   │   │   ├── InvoiceForm.js/css
+│   │   │   ├── EnquiryForm.js/css
 │   │   │   └── Login.js/css
 │   │   ├── context/
 │   │   │   └── AuthContext.js
@@ -93,7 +93,7 @@ ashok/
 │   │   └── db.js
 │   ├── routes/
 │   │   ├── auth.js
-│   │   ├── invoices.js
+│   │   ├── enquiries.js
 │   │   ├── customers.js
 │   │   └── sellers.js
 │   ├── server.js
@@ -106,10 +106,10 @@ ashok/
 ## Key Features Implemented
 
 1. **User Authentication**: Secure login/register with localStorage or JWT
-2. **Invoice Management**: Full CRUD operations for invoices
-3. **Dynamic Table**: Editable invoice items with real-time calculations
+2. **Enquiry Management**: Full CRUD operations for enquiries
+3. **Dynamic Table**: Editable enquiry items with real-time calculations
 4. **Excel Integration**: Import/export functionality using SheetJS
-5. **PDF Export**: Professional invoice generation using jsPDF
+5. **PDF Export**: Professional enquiry generation using jsPDF
 6. **Data Persistence**: localStorage (default) or SQLite database
 7. **Responsive Design**: Clean, modern UI with CSS styling
 8. **User Isolation**: Each user manages their own data

@@ -1,25 +1,25 @@
-# Stock Distribution and Invoice Management System
+# Stock Distribution and Enquiry Management System
 
-A full-stack web application for managing stock distribution, invoices, and seller-customer relationships. Built with React (frontend) and Express.js (backend).
+A full-stack web application for managing stock distribution, enquiries, and seller-customer relationships. Built with React (frontend) and Express.js (backend).
 
 ## Features
 
 ### Phase 1: localStorage-based (Current)
 - ✅ Secure user authentication (login/register)
 - ✅ User-specific data isolation
-- ✅ Invoice/transaction creation with:
+- ✅ Enquiry/transaction creation with:
   - Seller and customer details (name, address)
-  - Transaction metadata (engagement number, invoice number, date, status)
+  - Transaction metadata (engagement number, enquiry number, date, status)
   - Dynamic editable item table with auto-calculation
 - ✅ Excel import/export functionality
-- ✅ PDF invoice generation
+- ✅ PDF enquiry generation
 - ✅ Data persistence in browser localStorage
 
 ### Phase 2: Database-backed (Available)
 - ✅ Express.js REST API backend
 - ✅ SQLite database for data persistence
 - ✅ JWT-based authentication
-- ✅ RESTful APIs for invoices, customers, and sellers
+- ✅ RESTful APIs for enquiries, customers, and sellers
 
 ## Project Structure
 
@@ -66,10 +66,10 @@ The backend will run on `http://localhost:5000`
 
 By default, the application uses localStorage for data persistence. Simply:
 1. Register a new account or login
-2. Create invoices with seller and customer details
-3. Add items to invoices using the dynamic table
+2. Create enquiries with seller and customer details
+3. Add items to enquiries using the dynamic table
 4. Import/export Excel files
-5. Generate PDF invoices
+5. Generate PDF enquiries
 
 ### Database Mode (Optional)
 
@@ -85,11 +85,11 @@ To use the backend API instead of localStorage:
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 
-### Invoices
-- `GET /api/invoices` - Get all invoices (requires auth)
-- `GET /api/invoices/:id` - Get single invoice (requires auth)
-- `POST /api/invoices` - Create/update invoice (requires auth)
-- `DELETE /api/invoices/:id` - Delete invoice (requires auth)
+### Enquiries
+- `GET /api/enquiries` - Get all enquiries (requires auth)
+- `GET /api/enquiries/:id` - Get single enquiry (requires auth)
+- `POST /api/enquiries` - Create/update enquiry (requires auth)
+- `DELETE /api/enquiries/:id` - Delete enquiry (requires auth)
 
 ### Customers
 - `GET /api/customers` - Get all customers (requires auth)
@@ -99,9 +99,9 @@ To use the backend API instead of localStorage:
 - `GET /api/sellers` - Get all sellers (requires auth)
 - `POST /api/sellers` - Create/update seller (requires auth)
 
-## Invoice Item Fields
+## Enquiry Item Fields
 
-Each invoice item includes:
+Each enquiry item includes:
 - Description
 - Part Number
 - Made
@@ -129,11 +129,11 @@ The Excel file should have columns matching:
 ### Export Format
 Exports use the same column structure for easy reuse.
 
-## PDF Invoice
+## PDF Enquiry
 
 The PDF includes:
 - Company header
-- Invoice details (number, date, engagement number, status)
+- Enquiry details (number, date, engagement number, status)
 - Seller and customer information
 - Complete itemized table
 - Total amount
@@ -151,7 +151,7 @@ The PDF includes:
 - Payment management
 - Advanced reporting and analytics
 - Multi-currency support
-- Email invoice delivery
+- Email enquiry delivery
 - Mobile responsive improvements
 
 ## License
