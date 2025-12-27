@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import { storageService } from '../services/storageService';
+import { QuotationPDFTemplate } from './QuotationPDFTemplate';
 import './PurchaseDetail.css';
 
 function PurchaseDetail() {
@@ -30,70 +29,42 @@ function PurchaseDetail() {
   }, [id, user]);
 
   const handlePDFExport = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-
-    // Header
-    doc.setFillColor(102, 126, 234);
-    doc.rect(0, 0, pageWidth, 30, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(24);
-    doc.text('Purchase Order', pageWidth / 2, 20, { align: 'center' });
-
-    // Reset text color
-    doc.setTextColor(0, 0, 0);
-
-    // Purchase Info
-    doc.setFontSize(11);
-    doc.text(`Purchase Number: ${formData.enquiryNumber}`, 15, 45);
-    doc.text(`Date: ${new Date(formData.date).toLocaleDateString()}`, 15, 55);
-    doc.text(`Customer: ${formData.customerName}`, 15, 65);
-    doc.text(`Status: ${formData.status}`, 15, 75);
-
-    // Table
-    const tableData = formData.items.map((item, index) => [
-      index + 1,
-      item.description || '',
-      item.partNumber || '',
-      item.made || '',
-      item.quantity || '',
-      item.salePrice || '',
-      ((parseFloat(item.quantity) || 0) * (parseFloat(item.salePrice) || 0)).toFixed(2),
-    ]);
-
-    doc.autoTable({
-      head: [['S.No', 'Description', 'Part No', 'Made', 'Quantity', 'Sub Price', 'Total']],
-      body: tableData,
-      startY: 95,
-      margin: { left: 15, right: 15 },
-      styles: {
-        cellPadding: 8,
-        fontSize: 10,
-        textColor: [0, 0, 0],
+    const purchaseData = {
+      companyName: 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
+      companyAddress: 'Your Company Address Here',
+      companyEmail: 'info@example.com',
+      companyPhone: '+91-XXXXXXXXXX',
+      quotationNo: formData.enquiryNumber || 'PO-' + Date.now(),
+      quotationDate: new Date(formData.date || Date.now()),
+      validityDays: '30 Days',
+      billTo: {
+        name: formData.customerName || 'Customer Name',
+        address: 'Customer Address',
+        city: ''
       },
-      headStyles: {
-        fillColor: [102, 126, 234],
-        textColor: [255, 255, 255],
-        fontStyle: 'bold',
+      shipTo: {
+        name: formData.customerName || 'Customer Name',
+        address: 'Customer Address',
+        city: ''
       },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245],
-      },
-    });
+      placeOfDelivery: 'To your factory',
+      deliveryTime: '6-8 Weeks',
+      paymentTerms: '30 Days',
+      items: formData.items?.map(item => ({
+        description: item.description || '',
+        model: item.partNumber || '',
+        make: item.made || '',
+        hsn: item.hsn || '',
+        moq: item.moq || '',
+        uom: item.uom || 'Nos',
+        unitPrice: parseFloat(item.salePrice) || 0,
+        quantity: parseFloat(item.quantity) || 0
+      })) || [],
+      notes: 'GST 18% Extra. This purchase order is valid for 30 days.'
+    };
 
-    // Total
-    const totalAmount = formData.items.reduce((sum, item) => {
-      return sum + ((parseFloat(item.quantity) || 0) * (parseFloat(item.salePrice) || 0));
-    }, 0);
-
-    const finalY = doc.lastAutoTable.finalY + 10;
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text(`Total Amount: ₹ ${totalAmount.toFixed(2)}`, pageWidth - 15, finalY, { align: 'right' });
-
-    // Save PDF
-    doc.save(`Purchase_${formData.enquiryNumber}.pdf`);
+    const doc = QuotationPDFTemplate.generatePDF(purchaseData);
+    doc.save(`PurchaseOrder_${formData.enquiryNumber || 'export'}.pdf`);
   };
 
   const totalAmount = formData.items.reduce((sum, item) => {

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { QuotationPDFTemplate } from './QuotationPDFTemplate';
 import './QuotationDetail.css';
 
 function QuotationDetail() {
@@ -39,54 +38,42 @@ function QuotationDetail() {
   }
 
   const handlePDFExport = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
+    const quotationData = {
+      companyName: 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
+      companyAddress: 'Your Company Address Here',
+      companyEmail: 'info@example.com',
+      companyPhone: '+91-XXXXXXXXXX',
+      quotationNo: formData.enquiryNumber || 'Q-' + Date.now(),
+      quotationDate: new Date(formData.date || Date.now()),
+      validityDays: '30 Days',
+      billTo: {
+        name: formData.customer?.name || 'Customer Name',
+        address: formData.customer?.address || 'Customer Address',
+        city: formData.customer?.city || ''
+      },
+      shipTo: {
+        name: formData.customer?.name || 'Customer Name',
+        address: formData.customer?.address || 'Customer Address',
+        city: formData.customer?.city || ''
+      },
+      placeOfDelivery: formData.customer?.address || 'To your factory',
+      deliveryTime: '6-8 Weeks',
+      paymentTerms: '30 Days',
+      items: formData.items?.map(item => ({
+        description: item.description || '',
+        model: item.partNumber || '',
+        make: item.made || '',
+        hsn: item.hsn || '',
+        moq: item.moq || '',
+        uom: item.uom || 'Nos',
+        unitPrice: parseFloat(item.unitPrice) || 0,
+        quantity: parseFloat(item.quantity) || 0
+      })) || [],
+      notes: 'GST 18% Extra. This quotation is valid for 30 days. Warranty - Not applicable for import goods.'
+    };
 
-    doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Quotation', margin, 30);
-    
-    let yPos = 30;
-
-    doc.setFontSize(10);
-    doc.text(`Quotation No: ${formData.enquiryNumber || 'N/A'}`, pageWidth - 80, yPos);
-    yPos += 7;
-    doc.text(`Date: ${formData.date || 'N/A'}`, pageWidth - 80, yPos);
-
-    yPos = 60;
-
-    doc.text(`Customer: ${formData.customer?.name || 'N/A'}`, margin, yPos);
-    yPos += 7;
-    doc.text(`Address: ${formData.customer?.address || ''}`, margin, yPos);
-    yPos += 15;
-
-    const tableData = formData.items.map((item, index) => [
-      index + 1,
-      item.description || '',
-      item.partNumber || '',
-      item.made || '',
-      item.quantity || '',
-      item.unitPrice || '',
-      ((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)).toFixed(2),
-      item.uom || '',
-    ]);
-
-    doc.autoTable({
-      startY: yPos,
-      head: [['S.No', 'Description', 'Part no', 'Made', 'Quantity', 'Unit Price', 'Total', 'UOM']],
-      body: tableData,
-      styles: { fontSize: 8 },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
-      margin: { left: margin, right: margin },
-    });
-
-    const finalY = doc.lastAutoTable.finalY + 10;
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Total = ${totalAmount.toFixed(2)}`, pageWidth - margin, finalY, { align: 'right' });
-
-    doc.save(`quotation_${formData.enquiryNumber || 'export'}.pdf`);
+    const doc = QuotationPDFTemplate.generatePDF(quotationData);
+    doc.save(`Quotation_${formData.enquiryNumber || 'export'}.pdf`);
   };
 
   return (
