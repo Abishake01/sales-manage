@@ -372,12 +372,11 @@ function EnquiryForm() {
                     <th>Part no</th>
                     <th>made</th>
                     <th>quantity</th>
-                    <th>UOM</th>
                     <th>unit price</th>
                     <th>total</th>
                     <th>sub name</th>
                     <th>sub price</th>
-                    
+                    <th>UOM</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -448,12 +447,18 @@ function EnquiryForm() {
                         />
                       </td>
                       <td>
-                        <input
-                          type="text"
+                        <select
                           value={item.uom}
                           onChange={(e) => handleItemChange(index, 'uom', e.target.value)}
-                          placeholder="UOM"
-                        />
+                          className="uom-select"
+                        >
+                          <option value="">Select UOM</option>
+                          <option value="nes">nes</option>
+                          <option value="pcts">pcts</option>
+                          <option value="pks">pks</option>
+                          <option value="ltrs">ltrs</option>
+                          <option value="roll">roll</option>
+                        </select>
                       </td>
                       <td>
                         <button
