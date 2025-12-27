@@ -39,10 +39,14 @@ export function AuthProvider({ children }) {
   };
 
   const register = async ({ email, password, name }) => {
+    const siteUrl = process.env.REACT_APP_SITE_URL || window.location.origin;
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } }
+      options: {
+        data: { name },
+        emailRedirectTo: `${siteUrl}/login`
+      }
     });
     if (error) return { success: false, error: error.message };
     const { data: sessionData } = await supabase.auth.getUser();
