@@ -121,27 +121,6 @@
   background: #b91c1c;
   transform: translateY(-1px);
 }
-  font-weight: 500;
-  transition: background 0.3s;
-}
-
-.edit-btn {
-  background: #667eea;
-  color: white;
-}
-
-.edit-btn:hover {
-  background: #5568d3;
-}
-
-.delete-btn {
-  background: #e74c3c;
-  color: white;
-}
-
-.delete-btn:hover {
-  background: #c0392b;
-}
 
 .no-data {
   text-align: center;
