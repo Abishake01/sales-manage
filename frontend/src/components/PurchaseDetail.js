@@ -90,7 +90,7 @@ function PurchaseDetail() {
           <div className="info-section">
             <h3>Purchase Details</h3>
             <p>
-              <strong>Enquiry Number:</strong> {formData.enquiryNumber}
+              <strong>Enquiry Number:</strong> {formData.enquiryNumber || formData.engagementNumber || 'N/A'}
             </p>
             <p>
               <strong>Date:</strong> {new Date(formData.date).toLocaleDateString()}

@@ -302,12 +302,12 @@ function EnquiryForm() {
             
             <div className="engagement-details">
               <div className="detail-row">
-                <label>Enquire No:</label>
+                <label>Enquiry No:</label>
                 <input
                   type="text"
-                  value={formData.engagementNumber}
-                  onChange={(e) => handleInputChange('engagementNumber', e.target.value)}
-                  placeholder="Enter enquire number"
+                  value={formData.enquiryNumber}
+                  onChange={(e) => handleInputChange('enquiryNumber', e.target.value)}
+                  placeholder="Enter enquiry number"
                 />
               </div>
               <div className="detail-row">

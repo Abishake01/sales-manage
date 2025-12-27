@@ -69,7 +69,7 @@ function EnquiryList() {
             <tbody>
               {enquiries.map((enquiry) => (
                 <tr key={enquiry.id}>
-                  <td>{enquiry.enquiryNumber}</td>
+                  <td>{enquiry.enquiryNumber || enquiry.engagementNumber || 'N/A'}</td>
                   <td>{new Date(enquiry.date).toLocaleDateString()}</td>
                   <td>{enquiry.customer?.name || enquiry.customerName || 'N/A'}</td>
                   <td>

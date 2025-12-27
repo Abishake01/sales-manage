@@ -65,7 +65,7 @@ function PurchaseList() {
           <tbody>
             {purchases.map((purchase) => (
               <tr key={purchase.id}>
-                <td>{purchase.enquiryNumber}</td>
+                <td>{purchase.enquiryNumber || purchase.engagementNumber || 'N/A'}</td>
                 <td>{new Date(purchase.date).toLocaleDateString()}</td>
                 <td>{purchase.customer?.name || purchase.customerName || 'N/A'}</td>
                 <td>

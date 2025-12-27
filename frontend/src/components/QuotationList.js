@@ -71,7 +71,7 @@ function QuotationList() {
                 <tbody>
                   {quotations.map((quotation) => (
                     <tr key={quotation.id}>
-                      <td>{quotation.enquiryNumber || 'N/A'}</td>
+                      <td>{quotation.enquiryNumber || quotation.engagementNumber || 'N/A'}</td>
                       <td>{quotation.date || 'N/A'}</td>
                       <td>{quotation.customer?.name || 'N/A'}</td>
                       <td>

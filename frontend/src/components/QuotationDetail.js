@@ -43,7 +43,7 @@ function QuotationDetail() {
       companyAddress: 'Your Company Address Here',
       companyEmail: 'info@example.com',
       companyPhone: '+91-XXXXXXXXXX',
-      quotationNo: formData.enquiryNumber || 'Q-' + Date.now(),
+         quotationNo: formData.enquiryNumber || formData.engagementNumber || 'Q-' + Date.now(),
       quotationDate: new Date(formData.date || Date.now()),
       validityDays: '30 Days',
       billTo: {
@@ -94,7 +94,7 @@ function QuotationDetail() {
         <div className="quotation-info">
           <div className="info-section">
             <h3>Quotation Information</h3>
-            <p><strong>Quotation No:</strong> {formData.enquiryNumber || 'N/A'}</p>
+               <p><strong>Quotation No:</strong> {formData.enquiryNumber || formData.engagementNumber || 'N/A'}</p>
             <p><strong>Date:</strong> {formData.date || 'N/A'}</p>
             <p><strong>Status:</strong> {formData.status || 'pending'}</p>
           </div>
