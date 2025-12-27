@@ -16,6 +16,9 @@ function EnquiryForm() {
     engagementNumber: '',
     enquiryNumber: '',
     date: new Date().toISOString().split('T')[0],
+    incharge: '',
+    validityValue: '',
+    validityUnit: 'days',
     status: 'pending',
     seller: {
       name: '',
@@ -203,6 +206,9 @@ function EnquiryForm() {
       enquiryNo: formData.enquiryNumber || formData.engagementNumber || 'ENQ-' + Date.now(),
       enquiryDate: new Date(formData.date || Date.now()),
       status: formData.status || 'pending',
+      incharge: formData.incharge || '',
+      validityValue: formData.validityValue || '',
+      validityUnit: formData.validityUnit || 'days',
       customer: {
         name: formData.customer?.name || '',
         address: formData.customer?.address || ''
@@ -278,6 +284,34 @@ function EnquiryForm() {
                   value={formData.date}
                   onChange={(e) => handleInputChange('date', e.target.value)}
                 />
+              </div>
+              <div className="detail-row">
+                <label>Incharge:</label>
+                <input
+                  type="text"
+                  value={formData.incharge}
+                  onChange={(e) => handleInputChange('incharge', e.target.value)}
+                  placeholder="Enter incharge name"
+                />
+              </div>
+              <div className="detail-row">
+                <label>Validity:</label>
+                <input
+                  type="number"
+                  value={formData.validityValue}
+                  onChange={(e) => handleInputChange('validityValue', e.target.value)}
+                  placeholder="30"
+                  min="0"
+                  style={{ width: '80px', marginRight: '8px' }}
+                />
+                <select
+                  value={formData.validityUnit}
+                  onChange={(e) => handleInputChange('validityUnit', e.target.value)}
+                  style={{ width: '120px' }}
+                >
+                  <option value="days">days</option>
+                  <option value="months">months</option>
+                </select>
               </div>
               
               <div className="detail-row">
