@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { storageService } from '../services/storageService';
+import { getEnquiryWithItems } from '../services/enquiryService';
 import { PurchasePDFTemplate } from './PurchasePDFTemplate';
 import { getProfile, defaultProfile } from '../services/profileService';
 import './PurchaseDetail.css';
@@ -14,12 +14,18 @@ function PurchaseDetail() {
   const [companyProfile, setCompanyProfile] = useState(defaultProfile);
 
   useEffect(() => {
-    if (user?.id && id) {
-      const purchase = storageService.getEnquiryById(user.id, id);
-      if (purchase) {
-        setFormData(purchase);
+    const load = async () => {
+      if (user?.id && id) {
+        try {
+          const data = await getEnquiryWithItems(id);
+          setFormData(data);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn('Failed to load purchase', e.message);
+        }
       }
-    }
+    };
+    load();
   }, [id, user]);
 
   useEffect(() => {

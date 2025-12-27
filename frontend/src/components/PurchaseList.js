@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { storageService } from '../services/storageService';
+import { listEnquiries } from '../services/enquiryService';
 import './PurchaseList.css';
 
 function PurchaseList() {
@@ -10,10 +10,13 @@ function PurchaseList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user?.id) {
-      const userPurchases = storageService.getEnquiry(user.id);
-      setPurchases(userPurchases || []);
-    }
+    const load = async () => {
+      if (user?.id) {
+        const rows = await listEnquiries(user.id);
+        setPurchases(rows || []);
+      }
+    };
+    load();
   }, [user]);
 
   const handleView = (purchaseId) => {

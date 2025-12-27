@@ -5,18 +5,19 @@ import './Login.css';
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (isLogin) {
-      const result = login(username, password);
+      const result = await login(email, password);
       if (result.success) {
         navigate('/dashboard');
       } else {
@@ -27,7 +28,7 @@ function Login() {
         setError('Password must be at least 6 characters');
         return;
       }
-      const result = register(username, password);
+      const result = await register({ email, password, name });
       if (result.success) {
         navigate('/dashboard');
       } else {
@@ -44,16 +45,29 @@ function Login() {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoFocus
             />
           </div>
+          {!isLogin && (
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your display name"
+                required
+              />
+            </div>
+          )}
           
           <div className="form-group">
             <label htmlFor="password">Password</label>

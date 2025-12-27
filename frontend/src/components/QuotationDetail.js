@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { storageService } from '../services/storageService';
+import { getEnquiryWithItems } from '../services/enquiryService';
 import { QuotationPDFTemplate } from './QuotationPDFTemplate';
 import { getProfile, defaultProfile } from '../services/profileService';
 import './QuotationDetail.css';
@@ -16,12 +16,18 @@ function QuotationDetail() {
   const [companyProfile, setCompanyProfile] = useState(defaultProfile);
 
   useEffect(() => {
-    if (!formData && user) {
-      const enquiry = storageService.getEnquiryById(user.id, id);
-      if (enquiry) {
-        setFormData(enquiry);
+    const load = async () => {
+      if (!formData && user && id) {
+        try {
+          const data = await getEnquiryWithItems(id);
+          setFormData(data);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn('Failed to load enquiry', e.message);
+        }
       }
-    }
+    };
+    load();
   }, [id, user, formData]);
 
   useEffect(() => {

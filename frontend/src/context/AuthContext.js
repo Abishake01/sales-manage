@@ -1,71 +1,63 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { storageService } from '../services/storageService';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../services/supabaseClient';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
+  return ctx;
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in from localStorage
-    const storedUser = storageService.getCurrentUser();
-    if (storedUser) {
-      setUser(storedUser);
-    }
+    let mounted = true;
+    const init = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (mounted) setUser(data.user || null);
+      setLoading(false);
+    };
+    init();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => {
+      sub.subscription?.unsubscribe();
+      mounted = false;
+    };
   }, []);
 
-  const login = (username, password) => {
-    const users = storageService.getUsers();
-    const foundUser = users.find(
-      u => u.username === username && u.password === password
-    );
-    
-    if (foundUser) {
-      const userData = { id: foundUser.id, username: foundUser.username };
-      setUser(userData);
-      storageService.setCurrentUser(userData);
-      return { success: true };
-    }
-    
-    return { success: false, error: 'Invalid username or password' };
-  };
-
-  const register = (username, password) => {
-    const users = storageService.getUsers();
-    
-    if (users.find(u => u.username === username)) {
-      return { success: false, error: 'Username already exists' };
-    }
-    
-    const newUser = {
-      id: Date.now().toString(),
-      username,
-      password, // In production, this should be hashed
-    };
-    
-    storageService.addUser(newUser);
-    const userData = { id: newUser.id, username: newUser.username };
-    setUser(userData);
-    storageService.setCurrentUser(userData);
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { success: false, error: error.message };
+    setUser(data.user);
     return { success: true };
   };
 
-  const logout = () => {
+  const register = async ({ email, password, name }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } }
+    });
+    if (error) return { success: false, error: error.message };
+    const { data: sessionData } = await supabase.auth.getUser();
+    setUser(sessionData.user || null);
+    return { success: true };
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    storageService.clearCurrentUser();
     window.location.href = '/login';
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

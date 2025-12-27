@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { storageService } from '../services/storageService';
+import { listEnquiries } from '../services/enquiryService';
 import './QuotationList.css';
 
 function QuotationList() {
@@ -10,10 +10,13 @@ function QuotationList() {
   const [quotations, setQuotations] = useState([]);
 
   useEffect(() => {
-    if (user) {
-      const userQuotations = storageService.getEnquiry(user.id);
-      setQuotations(userQuotations);
-    }
+    const load = async () => {
+      if (user?.id) {
+        const rows = await listEnquiries(user.id);
+        setQuotations(rows || []);
+      }
+    };
+    load();
   }, [user]);
 
   

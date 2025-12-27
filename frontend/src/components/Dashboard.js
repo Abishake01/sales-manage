@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { storageService } from '../services/storageService';
+import { listEnquiries, deleteEnquiry } from '../services/enquiryService';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -16,31 +16,32 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    if (user) {
-      const userEnquiry = storageService.getEnquiry(user.id);
-      setEnquiry(userEnquiry);
-
-      // Calculate stats
-      const totalAmount = userEnquiry.reduce((sum, item) => sum + (parseFloat(item.totalAmount) || 0), 0);
-      setStats({
-        totalEnquiries: userEnquiry.length,
-        totalQuotations: userEnquiry.length, // Same data source for now
-        totalPurchases: userEnquiry.length,  // Same data source for now
-        totalAmount: totalAmount,
-      });
-    }
+    const load = async () => {
+      if (user?.id) {
+        const rows = await listEnquiries(user.id);
+        setEnquiry(rows);
+        const totalAmount = rows.reduce((sum, item) => sum + (parseFloat(item.totalAmount) || 0), 0);
+        setStats({
+          totalEnquiries: rows.length,
+          totalQuotations: rows.length,
+          totalPurchases: rows.length,
+          totalAmount: totalAmount,
+        });
+      }
+    };
+    load();
   }, [user]);
 
-  const handleDelete = (enquiryId) => {
+  const handleDelete = async (enquiryId) => {
     if (window.confirm('Are you sure you want to delete this enquiry?')) {
-      storageService.deleteEnquiry(user.id, enquiryId);
-      const updated = storageService.getEnquiry(user.id);
-      setEnquiry(updated);
-      const totalAmount = updated.reduce((sum, item) => sum + (parseFloat(item.totalAmount) || 0), 0);
+      await deleteEnquiry(user.id, enquiryId);
+      const rows = await listEnquiries(user.id);
+      setEnquiry(rows);
+      const totalAmount = rows.reduce((sum, item) => sum + (parseFloat(item.totalAmount) || 0), 0);
       setStats({
-        totalEnquiries: updated.length,
-        totalQuotations: updated.length,
-        totalPurchases: updated.length,
+        totalEnquiries: rows.length,
+        totalQuotations: rows.length,
+        totalPurchases: rows.length,
         totalAmount: totalAmount,
       });
     }
@@ -64,7 +65,7 @@ function Dashboard() {
       <header className="dashboard-header">
         <div>
           <h1>Stock Distribution System</h1>
-          <p>Welcome, {user?.username}</p>
+          <p>Welcome, {user?.user_metadata?.name || user?.email}</p>
         </div>
         <button onClick={logout} className="logout-button">
           Logout
@@ -161,7 +162,7 @@ function Dashboard() {
                     <tr key={item.id}>
                       <td>{item.enquiryNumber || item.engagementNumber || 'N/A'}</td>
                       <td>{new Date(item.date).toLocaleDateString()}</td>
-                      <td>{item.customerName || 'N/A'}</td>
+                      <td>{item.customer?.name || 'N/A'}</td>
                       <td>
                         <span
                           className="status-badge"

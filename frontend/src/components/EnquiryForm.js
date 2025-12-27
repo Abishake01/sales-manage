@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { storageService } from '../services/storageService';
+// Supabase migration: use enquiryService instead of local storage
+import { upsertEnquiry, getEnquiryWithItems } from '../services/enquiryService';
 import * as XLSX from 'xlsx';
 import { EnquiryPDFTemplate } from './EnquiryPDFTemplate';
 import { getProfile, defaultProfile } from '../services/profileService';
@@ -36,13 +37,38 @@ function EnquiryForm() {
   const [companyProfile, setCompanyProfile] = useState(defaultProfile);
 
   useEffect(() => {
-    if (!isNew && user) {
-      const enquiry = storageService.getEnquiryById(user.id, id);
-      if (enquiry) {
-        setFormData(enquiry);
+    const load = async () => {
+      if (!isNew && user && id) {
+        try {
+          const data = await getEnquiryWithItems(id);
+          setFormData({
+            engagementNumber: '',
+            enquiryNumber: data.enquiryNumber || '',
+            date: data.date || new Date().toISOString().split('T')[0],
+            incharge: data.incharge || (user.user_metadata?.name || user.email || ''),
+            validityValue: data.validityValue || '',
+            validityUnit: data.validityUnit || 'days',
+            status: data.status || 'pending',
+            seller: { name: '', address: '' },
+            customer: { name: data.customer?.name || '', address: data.customer?.address || '' },
+            items: data.items || [],
+          });
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn('Failed to load enquiry', e.message);
+        }
       }
-    }
+    };
+    load();
   }, [id, isNew, user]);
+
+  // Default incharge to user display name
+  useEffect(() => {
+    if (user && !formData.incharge) {
+      const display = user.user_metadata?.name || user.email || '';
+      setFormData(f => ({ ...f, incharge: display }));
+    }
+  }, [user]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -133,20 +159,15 @@ function EnquiryForm() {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!user) return;
-
-    const enquiry = {
-      id: isNew ? Date.now().toString() : id,
-      userId: user.id,
-      ...formData,
-      totalAmount,
-      updatedAt: new Date().toISOString(),
-    };
-
-    storageService.saveEnquiry(enquiry);
-    alert('Enquiry saved successfully!');
-    navigate('/dashboard');
+    try {
+      await upsertEnquiry(user.id, { ...formData, id });
+      alert('Enquiry saved successfully!');
+      navigate('/dashboard');
+    } catch (e) {
+      alert('Error saving enquiry: ' + e.message);
+    }
   };
 
   const handleExcelImport = (e) => {

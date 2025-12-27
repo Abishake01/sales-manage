@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { storageService } from '../services/storageService';
+import { listEnquiries, deleteEnquiry } from '../services/enquiryService';
 import './EnquiryList.css';
 
 function EnquiryList() {
@@ -10,10 +10,18 @@ function EnquiryList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user?.id) {
-      const userEnquiries = storageService.getEnquiry(user.id);
-      setEnquiries(userEnquiries || []);
-    }
+    const load = async () => {
+      if (user?.id) {
+        try {
+          const rows = await listEnquiries(user.id);
+          setEnquiries(rows || []);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn('Failed to load enquiries', e.message);
+        }
+      }
+    };
+    load();
   }, [user]);
 
   const handleCreate = () => {
@@ -24,11 +32,11 @@ function EnquiryList() {
     navigate(`/enquiry/${enquiryId}`);
   };
 
-  const handleDelete = (enquiryId) => {
+  const handleDelete = async (enquiryId) => {
     if (window.confirm('Are you sure you want to delete this enquiry?')) {
-      storageService.deleteEnquiry(user.id, enquiryId);
-      const userEnquiries = storageService.getEnquiry(user.id);
-      setEnquiries(userEnquiries || []);
+      await deleteEnquiry(user.id, enquiryId);
+      const rows = await listEnquiries(user.id);
+      setEnquiries(rows || []);
     }
   };
 
