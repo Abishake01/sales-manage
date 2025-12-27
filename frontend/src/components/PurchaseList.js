@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import storageService from '../services/storageService';
+import { storageService } from '../services/storageService';
 import './PurchaseList.css';
 
 function PurchaseList() {

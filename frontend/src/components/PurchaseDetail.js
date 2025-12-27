@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import storageService from '../services/storageService';
+import { storageService } from '../services/storageService';
 import './PurchaseDetail.css';
 
 function PurchaseDetail() {
