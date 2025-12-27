@@ -1,6 +1,6 @@
 .enquiry-list-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
   margin-left: 250px;
   padding: 2rem;
 }
@@ -15,35 +15,39 @@
 }
 
 .enquiry-list-header h2 {
-  color: #333;
+  color: #1e293b;
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .create-btn {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s;
-  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+  letter-spacing: 0.025em;
 }
 
 .create-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
 
 .enquiry-table-wrapper {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .enquiry-table {
@@ -52,29 +56,33 @@
 }
 
 .enquiry-table thead {
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 .enquiry-table th {
-  padding: 1rem;
+  padding: 1rem 1.25rem;
   text-align: left;
   font-weight: 600;
   color: white;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
 }
 
 .enquiry-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-  color: #666;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.95rem;
 }
 
 .enquiry-table tbody tr {
-  transition: background 0.2s;
+  transition: background 0.15s ease;
 }
 
 .enquiry-table tbody tr:hover {
-  background: #f8f9fa;
+  background: #f8fafc;
 }
 
 .status-badge {
@@ -93,33 +101,38 @@
 
 .edit-btn,
 .delete-btn {
-  padding: 0.35rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  letter-spacing: 0.025em;
 }
 
 .edit-btn {
-  background: #2563eb;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }
 
 .edit-btn:hover {
-  background: #1d4ed8;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(59, 130, 246, 0.3);
 }
 
 .delete-btn {
-  background: #dc2626;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
 }
 
 .delete-btn:hover {
-  background: #b91c1c;
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
   transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.3);
 }
 
 .no-data {

@@ -1,23 +1,28 @@
 .settings-container {
-  padding: 24px;
-  max-width: 800px;
+  padding: 2rem;
+  max-width: 900px;
   margin: 0 auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+  margin-left: 250px;
 }
 
 .settings-subtitle {
-  color: #555;
-  margin-bottom: 16px;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .settings-form {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: white;
+  border: 1px solid rgba(59, 130, 246, 0.08);
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.5rem;
 }
 
 .settings-field {
@@ -28,24 +33,30 @@
 
 .settings-field span {
   font-weight: 600;
-  color: #1f2937;
+  color: #1e293b;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
 }
 
 .settings-field input,
 .settings-field textarea,
 .settings-field select {
-  border: 1px solid #d1d5db;
+  border: 1.5px solid #e2e8f0;
   border-radius: 8px;
-  padding: 10px;
-  font-size: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
   outline: none;
+  background-color: #f8fafc;
+  color: #1e293b;
+  transition: all 0.2s ease;
 }
 
 .settings-field input:focus,
 .settings-field textarea:focus,
 .settings-field select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  border-color: #3b82f6;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .settings-grid {
@@ -61,21 +72,32 @@
 }
 
 .save-button {
-  background: #2563eb;
-  color: #fff;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
   border: none;
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+  letter-spacing: 0.025em;
+}
+
+.save-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.35);
+  transform: translateY(-1px);
 }
 
 .save-button:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .status-text {
-  color: #374151;
-  font-size: 14px;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
