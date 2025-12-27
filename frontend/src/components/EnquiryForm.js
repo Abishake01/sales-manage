@@ -33,7 +33,7 @@ function EnquiryForm() {
 
   useEffect(() => {
     if (!isNew && user) {
-      const enquiry = storageService.getEnquiry(user.id, id);
+      const enquiry = storageService.getEnquiryById(user.id, id);
       if (enquiry) {
         setFormData(enquiry);
       }

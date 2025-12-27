@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import './EnquiryList.css';
 
 function EnquiryList() {
   const [enquiries, setEnquiries] = useState([]);
-  const [user] = useState(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
-  });
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,7 +71,7 @@ function EnquiryList() {
                 <tr key={enquiry.id}>
                   <td>{enquiry.enquiryNumber}</td>
                   <td>{new Date(enquiry.date).toLocaleDateString()}</td>
-                  <td>{enquiry.customerName}</td>
+                  <td>{enquiry.customer?.name || enquiry.customerName || 'N/A'}</td>
                   <td>
                     <span className="status-badge" style={{ backgroundColor: getStatusColor(enquiry.status) }}>
                       {enquiry.status}

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import './PurchaseList.css';
 
 function PurchaseList() {
   const [purchases, setPurchases] = useState([]);
-  const [user] = useState(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
-  });
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +67,7 @@ function PurchaseList() {
               <tr key={purchase.id}>
                 <td>{purchase.enquiryNumber}</td>
                 <td>{new Date(purchase.date).toLocaleDateString()}</td>
-                <td>{purchase.customerName}</td>
+                <td>{purchase.customer?.name || purchase.customerName || 'N/A'}</td>
                 <td>
                   <span className="status-badge" style={{ backgroundColor: getStatusColor(purchase.status) }}>
                     {purchase.status}
