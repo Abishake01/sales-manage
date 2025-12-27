@@ -16,12 +16,7 @@ function QuotationList() {
     }
   }, [user]);
 
-  const handleDelete = (quotationId) => {
-    if (window.confirm('Are you sure you want to delete this quotation?')) {
-      storageService.deleteEnquiry(user.id, quotationId);
-      setQuotations(storageService.getEnquiry(user.id));
-    }
-  };
+  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -90,12 +85,7 @@ function QuotationList() {
                         >
                           View
                         </button>
-                        <button
-                          onClick={() => handleDelete(quotation.id)}
-                          className="action-button delete"
-                        >
-                          Delete
-                        </button>
+                         
                       </td>
                     </tr>
                   ))}

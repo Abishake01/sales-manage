@@ -20,13 +20,7 @@ function PurchaseList() {
     navigate(`/purchase/${purchaseId}`);
   };
 
-  const handleDelete = (purchaseId) => {
-    if (window.confirm('Are you sure you want to delete this purchase?')) {
-      storageService.deleteEnquiry(user.id, purchaseId);
-      const userPurchases = storageService.getEnquiry(user.id);
-      setPurchases(userPurchases || []);
-    }
-  };
+  
 
   const getStatusColor = (status) => {
     const colors = {
@@ -78,9 +72,7 @@ function PurchaseList() {
                   <button className="view-btn" onClick={() => handleView(purchase.id)}>
                     View
                   </button>
-                  <button className="delete-btn" onClick={() => handleDelete(purchase.id)}>
-                    Delete
-                  </button>
+                   
                 </td>
               </tr>
             ))}

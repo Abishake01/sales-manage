@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { EnquiryPDFTemplate } from './EnquiryPDFTemplate';
 import './EnquiryForm.css';
 
 function EnquiryForm() {
@@ -196,70 +195,32 @@ function EnquiryForm() {
   };
 
   const handlePDFExport = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
+    const enquiryData = {
+      companyName: 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
+      companyAddress: 'Your Company Address Here',
+      companyEmail: 'info@example.com',
+      companyPhone: '+91-XXXXXXXXXX',
+      enquiryNo: formData.enquiryNumber || formData.engagementNumber || 'ENQ-' + Date.now(),
+      enquiryDate: new Date(formData.date || Date.now()),
+      status: formData.status || 'pending',
+      customer: {
+        name: formData.customer?.name || '',
+        address: formData.customer?.address || ''
+      },
+      items: formData.items?.map(item => ({
+        description: item.description || '',
+        partNumber: item.partNumber || '',
+        made: item.made || '',
+        quantity: parseFloat(item.quantity) || 0,
+        uom: item.uom || '',
+        unitPrice: parseFloat(item.unitPrice) || 0,
+        subName: item.subName || '',
+        salePrice: parseFloat(item.salePrice) || 0,
+      })) || []
+    };
 
-    // Company Header
-    doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Company Name', margin, 30);
-    
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Address', margin, 40);
-
-    let yPos = 30;
-
-    // Enquiry Details (right side)
-    doc.setFontSize(10);
-    doc.text(`Enquiry No: ${formData.engagementNumber || 'N/A'}`, pageWidth - 80, yPos);
-    yPos += 7;
-    doc.text(`Date: ${formData.date || 'N/A'}`, pageWidth - 80, yPos);
-    yPos += 7;
-    doc.text(`Enquiry: ${formData.enquiryNumber || 'N/A'}`, pageWidth - 80, yPos);
-    yPos += 7;
-    doc.text(`Status: ${formData.status || 'pending'}`, pageWidth - 80, yPos);
-
-    yPos = 60;
-
-    // Customer Details
-    doc.text(`customer name: ${formData.customer.name || 'N/A'}`, margin, yPos);
-    yPos += 7;
-    doc.text(`Address: ${formData.customer.address || ''}`, margin, yPos);
-    yPos += 15;
-
-    // Items Table
-    const tableData = formData.items.map((item, index) => [
-      index + 1,
-      item.description || '',
-      item.partNumber || '',
-      item.made || '',
-      item.quantity || '',
-      item.unitPrice || '',
-      ((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)).toFixed(2),
-      item.subName || '',
-      item.salePrice || '',
-      item.uom || '',
-    ]);
-
-    doc.autoTable({
-      startY: yPos,
-      head: [['s.no', 'Description', 'Part no', 'made', 'quantity', 'unit price', 'total', 'sub name', 'sale price', 'vum']],
-      body: tableData,
-      styles: { fontSize: 8 },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] },
-      margin: { left: margin, right: margin },
-    });
-
-    const finalY = doc.lastAutoTable.finalY + 10;
-
-    // Total Amount
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Total = ${totalAmount.toFixed(2)}`, pageWidth - margin, finalY, { align: 'right' });
-
-    doc.save(`enquiry_${formData.enquiryNumber || 'export'}.pdf`);
+    const doc = EnquiryPDFTemplate.generatePDF(enquiryData);
+    doc.save(`Enquiry_${enquiryData.enquiryNo}.pdf`);
   };
 
   return (
