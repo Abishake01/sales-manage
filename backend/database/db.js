@@ -64,7 +64,7 @@ function init() {
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
         engagement_number TEXT,
-        invoice_number TEXT,
+        enquiry_number TEXT,
         date TEXT,
         status TEXT DEFAULT 'pending',
         seller_id TEXT,
