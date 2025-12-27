@@ -1,6 +1,7 @@
 .dashboard-container {
   min-height: 100vh;
   background-color: #f5f5f5;
+  margin-left: 250px;
 }
 
 .dashboard-header {
@@ -44,26 +45,90 @@
   padding: 0 2rem;
 }
 
-.dashboard-actions {
+/* Stats Section */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.primary-button {
-  padding: 0.75rem 1.5rem;
-  background: #667eea;
-  color: white;
-  border: none;
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.stat-info h3 {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.stat-number {
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Analytics Section */
+.analytics-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.analytics-section h2 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.analytics-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.analytics-chart {
+  background: #f8f9fa;
+  padding: 1.5rem;
   border-radius: 5px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
+  border: 1px solid #e0e0e0;
 }
 
-.primary-button:hover {
-  background: #5568d3;
+.analytics-chart h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 1rem;
 }
 
+.chart-placeholder {
+  text-align: center;
+  color: #999;
+  padding: 2rem 1rem;
+}
+
+/* Enquiry Section */
 .enquiry-section {
   background: white;
   padding: 2rem;
@@ -74,6 +139,7 @@
 .enquiry-section h2 {
   color: #333;
   margin-bottom: 1.5rem;
+  margin-top: 0;
 }
 
 .empty-state {
@@ -92,12 +158,83 @@
 }
 
 .enquiry-table thead {
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .enquiry-table th {
   padding: 1rem;
   text-align: left;
+  font-weight: 600;
+  color: white;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.enquiry-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  color: #666;
+}
+
+.enquiry-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.action-button {
+  padding: 0.35rem 0.75rem;
+  margin-right: 0.25rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.action-button.edit {
+  background: #667eea;
+  color: white;
+}
+
+.action-button.edit:hover {
+  background: #5568d3;
+}
+
+.action-button.delete {
+  background: #e74c3c;
+  color: white;
+}
+
+.action-button.delete:hover {
+  background: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin-left: 200px;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .enquiry-table {
+    font-size: 0.9rem;
+  }
+
+  .enquiry-table th,
+  .enquiry-table td {
+    padding: 0.5rem;
+  }
+}
   font-weight: 600;
   color: #333;
   border-bottom: 2px solid #dee2e6;

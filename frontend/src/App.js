@@ -3,6 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import EnquiryForm from './components/EnquiryForm';
+import EnquiryList from './components/EnquiryList';
+import QuotationList from './components/QuotationList';
+import QuotationDetail from './components/QuotationDetail';
+import PurchaseList from './components/PurchaseList';
+import PurchaseDetail from './components/PurchaseDetail';
+import Sidebar from './components/Sidebar';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
 
@@ -12,35 +18,34 @@ function PrivateRoute({ children }) {
 }
 
 function AppRoutes() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
+    );
+  }
+
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/enquiry/new"
-        element={
-          <PrivateRoute>
-            <EnquiryForm />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/enquiry/:id"
-        element={
-          <PrivateRoute>
-            <EnquiryForm />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
-    </Routes>
+    <div style={{ display: 'flex' }}>
+      <Sidebar />
+      <div style={{ flex: 1 }}>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/enquiry" element={<EnquiryList />} />
+          <Route path="/enquiry/new" element={<EnquiryForm />} />
+          <Route path="/enquiry/:id" element={<EnquiryForm />} />
+          <Route path="/quotation" element={<QuotationList />} />
+          <Route path="/quotation/:id" element={<QuotationDetail />} />
+          <Route path="/purchase" element={<PurchaseList />} />
+          <Route path="/purchase/:id" element={<PurchaseDetail />} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+        </Routes>
+      </div>
+    </div>
   );
 }
 
