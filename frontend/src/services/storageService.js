@@ -38,6 +38,17 @@ class StorageService {
   getEnquiry(userId) {
     const enquiry = localStorage.getItem(STORAGE_KEYS.ENQUIRY);
     const allEnquiry = enquiry ? JSON.parse(enquiry) : [];
+    // Normalize legacy records: copy engagementNumber -> enquiryNumber if missing
+    let mutated = false;
+    for (const enq of allEnquiry) {
+      if (!enq.enquiryNumber && enq.engagementNumber) {
+        enq.enquiryNumber = enq.engagementNumber;
+        mutated = true;
+      }
+    }
+    if (mutated) {
+      localStorage.setItem(STORAGE_KEYS.ENQUIRY, JSON.stringify(allEnquiry));
+    }
     return allEnquiry.filter(enq => enq.userId === userId);
   }
 

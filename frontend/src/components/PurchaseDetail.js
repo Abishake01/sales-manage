@@ -34,7 +34,7 @@ function PurchaseDetail() {
       companyAddress: 'Your Company Address Here',
       companyEmail: 'info@example.com',
       companyPhone: '+91-XXXXXXXXXX',
-      quotationNo: formData.enquiryNumber || 'PO-' + Date.now(),
+      quotationNo: formData.enquiryNumber || formData.engagementNumber || 'PO-' + Date.now(),
       quotationDate: new Date(formData.date || Date.now()),
       validityDays: '30 Days',
       billTo: {
