@@ -70,24 +70,24 @@ class ApiService {
     return data;
   }
 
-  // Enquiries
-  async getEnquiries() {
-    return this.request('/enquiries');
+  // Enquiry
+  async getEnquiry() {
+    return this.request('/enquiry');
   }
 
-  async getEnquiry(id) {
-    return this.request(`/enquiries/${id}`);
+  async getEnquiryById(id) {
+    return this.request(`/enquiry/${id}`);
   }
 
   async saveEnquiry(enquiry) {
-    return this.request('/enquiries', {
+    return this.request('/enquiry', {
       method: 'POST',
       body: enquiry,
     });
   }
 
   async deleteEnquiry(id) {
-    return this.request(`/enquiries/${id}`, {
+    return this.request(`/enquiry/${id}`, {
       method: 'DELETE',
     });
   }

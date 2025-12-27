@@ -7,19 +7,19 @@ import './Dashboard.css';
 function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [enquiries, setEnquiries] = useState([]);
+  const [enquiry, setEnquiry] = useState([]);
 
   useEffect(() => {
     if (user) {
-      const userEnquiries = storageService.getEnquiries(user.id);
-      setEnquiries(userEnquiries);
+      const userEnquiry = storageService.getEnquiry(user.id);
+      setEnquiry(userEnquiry);
     }
   }, [user]);
 
   const handleDelete = (enquiryId) => {
     if (window.confirm('Are you sure you want to delete this enquiry?')) {
       storageService.deleteEnquiry(user.id, enquiryId);
-      setEnquiries(storageService.getEnquiries(user.id));
+      setEnquiry(storageService.getEnquiry(user.id));
     }
   };
 
@@ -58,15 +58,15 @@ function Dashboard() {
           </button>
         </div>
 
-        <div className="enquiries-section">
-          <h2>Your Enquiries</h2>
-          {enquiries.length === 0 ? (
+        <div className="enquiry-section">
+          <h2>Your Enquiry</h2>
+          {enquiry.length === 0 ? (
             <div className="empty-state">
-              <p>No enquiries yet. Create your first enquiry to get started.</p>
+              <p>No enquiry yet. Create your first enquiry to get started.</p>
             </div>
           ) : (
-            <div className="enquiries-table-container">
-              <table className="enquiries-table">
+            <div className="enquiry-table-container">
+              <table className="enquiry-table">
                 <thead>
                   <tr>
                     <th>Enquiry Number</th>
@@ -78,29 +78,29 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {enquiries.map((enquiry) => (
-                    <tr key={enquiry.id}>
-                      <td>{enquiry.enquiryNumber || 'N/A'}</td>
-                      <td>{enquiry.date || 'N/A'}</td>
-                      <td>{enquiry.customer?.name || 'N/A'}</td>
+                  {enquiry.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.enquiryNumber || 'N/A'}</td>
+                      <td>{item.date || 'N/A'}</td>
+                      <td>{item.customer?.name || 'N/A'}</td>
                       <td>
                         <span
                           className="status-badge"
-                          style={{ backgroundColor: getStatusColor(enquiry.status) }}
+                          style={{ backgroundColor: getStatusColor(item.status) }}
                         >
-                          {enquiry.status || 'pending'}
+                          {item.status || 'pending'}
                         </span>
                       </td>
-                      <td>${enquiry.totalAmount?.toFixed(2) || '0.00'}</td>
+                      <td>${item.totalAmount?.toFixed(2) || '0.00'}</td>
                       <td>
                         <button
-                          onClick={() => navigate(`/enquiry/${enquiry.id}`)}
+                          onClick={() => navigate(`/enquiry/${item.id}`)}
                           className="action-button edit"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(enquiry.id)}
+                          onClick={() => handleDelete(item.id)}
                           className="action-button delete"
                         >
                           Delete

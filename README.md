@@ -85,11 +85,11 @@ To use the backend API instead of localStorage:
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 
-### Enquiries
-- `GET /api/enquiries` - Get all enquiries (requires auth)
-- `GET /api/enquiries/:id` - Get single enquiry (requires auth)
-- `POST /api/enquiries` - Create/update enquiry (requires auth)
-- `DELETE /api/enquiries/:id` - Delete enquiry (requires auth)
+### Enquiry
+- `GET /api/enquiry` - Get all enquiry (requires auth)
+- `GET /api/enquiry/:id` - Get single enquiry (requires auth)
+- `POST /api/enquiry` - Create/update enquiry (requires auth)
+- `DELETE /api/enquiry/:id` - Delete enquiry (requires auth)
 
 ### Customers
 - `GET /api/customers` - Get all customers (requires auth)

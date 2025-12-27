@@ -58,9 +58,9 @@ function init() {
       )
     `);
 
-    // Enquiries table
+    // Enquiry table
     database.run(`
-      CREATE TABLE IF NOT EXISTS enquiries (
+      CREATE TABLE IF NOT EXISTS enquiry (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,
         engagement_number TEXT,
@@ -80,7 +80,7 @@ function init() {
 
     // Enquiry items table
     database.run(`
-      CREATE TABLE IF NOT EXISTS enquiry_items (
+      CREATE TABLE IF NOT EXISTS enquiry_item (
         id TEXT PRIMARY KEY,
         enquiry_id TEXT NOT NULL,
         description TEXT,
@@ -93,7 +93,7 @@ function init() {
         uom TEXT,
         total REAL DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (enquiry_id) REFERENCES enquiries(id) ON DELETE CASCADE
+        FOREIGN KEY (enquiry_id) REFERENCES enquiry(id) ON DELETE CASCADE
       )
     `);
 

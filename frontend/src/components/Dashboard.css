@@ -64,14 +64,14 @@
   background: #5568d3;
 }
 
-.enquiries-section {
+.enquiry-section {
   background: white;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.enquiries-section h2 {
+.enquiry-section h2 {
   color: #333;
   margin-bottom: 1.5rem;
 }
@@ -82,20 +82,20 @@
   color: #999;
 }
 
-.enquiries-table-container {
+.enquiry-table-container {
   overflow-x: auto;
 }
 
-.enquiries-table {
+.enquiry-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.enquiries-table thead {
+.enquiry-table thead {
   background: #f8f9fa;
 }
 
-.enquiries-table th {
+.enquiry-table th {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
@@ -103,13 +103,13 @@
   border-bottom: 2px solid #dee2e6;
 }
 
-.enquiries-table td {
+.enquiry-table td {
   padding: 1rem;
   border-bottom: 1px solid #dee2e6;
   color: #666;
 }
 
-.enquiries-table tbody tr:hover {
+.enquiry-table tbody tr:hover {
   background: #f8f9fa;
 }
 

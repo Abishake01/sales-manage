@@ -12,7 +12,7 @@ router.get('/', authenticateToken, (req, res) => {
     `SELECT e.*, 
             s.name as seller_name, s.address as seller_address,
             c.name as customer_name, c.address as customer_address
-     FROM enquiries e
+     FROM enquiry e
      LEFT JOIN sellers s ON e.seller_id = s.id
      LEFT JOIN customers c ON e.customer_id = c.id
      WHERE e.user_id = ?
@@ -27,7 +27,7 @@ router.get('/', authenticateToken, (req, res) => {
       const enquiryPromises = enquiries.map((enquiry) => {
         return new Promise((resolve, reject) => {
           db.all(
-            'SELECT * FROM enquiry_items WHERE enquiry_id = ?',
+            'SELECT * FROM enquiry_item WHERE enquiry_id = ?',
             [enquiry.id],
             (err, items) => {
               if (err) {
@@ -74,7 +74,7 @@ router.get('/:id', authenticateToken, (req, res) => {
     `SELECT e.*, 
             s.name as seller_name, s.address as seller_address,
             c.name as customer_name, c.address as customer_address
-     FROM enquiries e
+     FROM enquiry e
      LEFT JOIN sellers s ON e.seller_id = s.id
      LEFT JOIN customers c ON e.customer_id = c.id
      WHERE e.id = ? AND e.user_id = ?`,
@@ -89,7 +89,7 @@ router.get('/:id', authenticateToken, (req, res) => {
       }
 
       db.all(
-        'SELECT * FROM enquiry_items WHERE enquiry_id = ?',
+        'SELECT * FROM enquiry_item WHERE enquiry_id = ?',
         [enquiryId],
         (err, items) => {
           if (err) {
@@ -159,7 +159,7 @@ router.post('/', authenticateToken, (req, res) => {
     // Save enquiry
     const enquiryId = id || `enquiry_${Date.now()}`;
     db.run(
-      `INSERT OR REPLACE INTO enquiries 
+      `INSERT OR REPLACE INTO enquiry 
        (id, user_id, engagement_number, enquiry_number, date, status, seller_id, customer_id, total_amount, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
       [
@@ -180,7 +180,7 @@ router.post('/', authenticateToken, (req, res) => {
         }
 
         // Delete existing items
-        db.run('DELETE FROM enquiry_items WHERE enquiry_id = ?', [enquiryId], (err) => {
+        db.run('DELETE FROM enquiry_item WHERE enquiry_id = ?', [enquiryId], (err) => {
           if (err) {
             db.run('ROLLBACK');
             return res.status(500).json({ error: 'Error deleting old items' });
@@ -196,7 +196,7 @@ router.post('/', authenticateToken, (req, res) => {
                 const total = quantity * unitPrice;
 
                 db.run(
-                  `INSERT INTO enquiry_items 
+                  `INSERT INTO enquiry_item 
                    (id, enquiry_id, description, part_number, made, quantity, unit_price, sale_price, sub_name, uom, total)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                   [

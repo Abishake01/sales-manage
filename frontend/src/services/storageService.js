@@ -3,7 +3,7 @@
 const STORAGE_KEYS = {
   USERS: 'stock_distribution_users',
   CURRENT_USER: 'stock_distribution_current_user',
-  ENQUIRIES: 'stock_distribution_enquiries',
+  ENQUIRY: 'stock_distribution_enquiry',
   CUSTOMERS: 'stock_distribution_customers',
   SELLERS: 'stock_distribution_sellers',
 };
@@ -35,39 +35,39 @@ class StorageService {
   }
 
   // Enquiry management
-  getEnquiries(userId) {
-    const enquiries = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
-    const allEnquiries = enquiries ? JSON.parse(enquiries) : [];
-    return allEnquiries.filter(enq => enq.userId === userId);
+  getEnquiry(userId) {
+    const enquiry = localStorage.getItem(STORAGE_KEYS.ENQUIRY);
+    const allEnquiry = enquiry ? JSON.parse(enquiry) : [];
+    return allEnquiry.filter(enq => enq.userId === userId);
   }
 
-  getEnquiry(userId, enquiryId) {
-    const enquiries = this.getEnquiries(userId);
-    return enquiries.find(enq => enq.id === enquiryId);
+  getEnquiryById(userId, enquiryId) {
+    const enquiry = this.getEnquiry(userId);
+    return enquiry.find(enq => enq.id === enquiryId);
   }
 
   saveEnquiry(enquiry) {
-    const enquiries = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
-    const allEnquiries = enquiries ? JSON.parse(enquiries) : [];
+    const enquiryData = localStorage.getItem(STORAGE_KEYS.ENQUIRY);
+    const allEnquiry = enquiryData ? JSON.parse(enquiryData) : [];
     
-    const existingIndex = allEnquiries.findIndex(enq => enq.id === enquiry.id);
+    const existingIndex = allEnquiry.findIndex(enq => enq.id === enquiry.id);
     
     if (existingIndex >= 0) {
-      allEnquiries[existingIndex] = enquiry;
+      allEnquiry[existingIndex] = enquiry;
     } else {
-      allEnquiries.push(enquiry);
+      allEnquiry.push(enquiry);
     }
     
-    localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(allEnquiries));
+    localStorage.setItem(STORAGE_KEYS.ENQUIRY, JSON.stringify(allEnquiry));
   }
 
   deleteEnquiry(userId, enquiryId) {
-    const enquiries = localStorage.getItem(STORAGE_KEYS.ENQUIRIES);
-    const allEnquiries = enquiries ? JSON.parse(enquiries) : [];
-    const filtered = allEnquiries.filter(
+    const enquiryData = localStorage.getItem(STORAGE_KEYS.ENQUIRY);
+    const allEnquiry = enquiryData ? JSON.parse(enquiryData) : [];
+    const filtered = allEnquiry.filter(
       enq => !(enq.userId === userId && enq.id === enquiryId)
     );
-    localStorage.setItem(STORAGE_KEYS.ENQUIRIES, JSON.stringify(filtered));
+    localStorage.setItem(STORAGE_KEYS.ENQUIRY, JSON.stringify(filtered));
   }
 
   // Customer management
