@@ -53,7 +53,14 @@ class PurchasePDFTemplate {
     doc.text(purchaseData.purchaseNo, boxX + 25, detailsY + 14);
 
     doc.text('Validity:', boxX + 3, detailsY + 21);
-    doc.text(purchaseData.validityDays, boxX + 25, detailsY + 21);
+    const validityText = purchaseData.validityValue
+      ? `${purchaseData.validityValue} ${purchaseData.validityUnit || 'days'}`
+      : (purchaseData.validityDays || purchaseData.validity || '');
+    doc.text(validityText, boxX + 25, detailsY + 21);
+
+    // Optional Incharge for consistency across templates
+    doc.text('Incharge:', boxX + 3, detailsY + 28);
+    doc.text(purchaseData.incharge || '', boxX + 25, detailsY + 28);
 
     // Bill To section
     yPosition = Math.max(yPosition, detailsY + 35);
@@ -131,8 +138,8 @@ class PurchasePDFTemplate {
       item.model || '',
       item.make || '',
       item.quantity || '',
-      `₹${this.formatNumber(parseFloat(item.subPrice || 0))}`,
-      `₹${this.formatNumber(parseFloat(item.quantity || 0) * parseFloat(item.subPrice || 0))}`
+      this.formatNumber(parseFloat(item.subPrice || 0)),
+      this.formatNumber(parseFloat(item.quantity || 0) * parseFloat(item.subPrice || 0))
     ]);
 
     doc.autoTable({
@@ -179,19 +186,19 @@ class PurchasePDFTemplate {
     doc.setFont(undefined, 'bold');
     doc.setFontSize(10);
     doc.text('Total Amount', pageWidth - 55, yPosition);
-    doc.text(`₹${this.formatNumber(totalAmount)}`, pageWidth - 15, yPosition, { align: 'right' });
+    doc.text(this.formatNumber(totalAmount), pageWidth - 15, yPosition, { align: 'right' });
     yPosition += 8;
 
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
     doc.text('GST (18%)', pageWidth - 55, yPosition);
-    doc.text(`₹${this.formatNumber(gstAmount)}`, pageWidth - 15, yPosition, { align: 'right' });
+    doc.text(this.formatNumber(gstAmount), pageWidth - 15, yPosition, { align: 'right' });
     yPosition += 8;
 
     doc.setFont(undefined, 'bold');
     doc.setFontSize(10);
     doc.text('GRAND TOTAL', pageWidth - 55, yPosition);
-    doc.text(`₹${this.formatNumber(grandTotal)}`, pageWidth - 15, yPosition, { align: 'right' });
+    doc.text(this.formatNumber(grandTotal), pageWidth - 15, yPosition, { align: 'right' });
     yPosition += 15;
 
     // Terms and conditions

@@ -43,11 +43,13 @@ function EnquiryForm() {
   }, [id, isNew, user]);
 
   useEffect(() => {
-    // Calculate total amount whenever items change
+    // Calculate total amount whenever items change (apply s% discount per line)
     const total = formData.items.reduce((sum, item) => {
       const quantity = parseFloat(item.quantity) || 0;
       const unitPrice = parseFloat(item.unitPrice) || 0;
-      return sum + (quantity * unitPrice);
+      const sPercent = parseFloat(item.sPercent) || 0;
+      const lineTotal = quantity * unitPrice * (1 - sPercent / 100);
+      return sum + lineTotal;
     }, 0);
     setTotalAmount(total);
   }, [formData.items]);
@@ -104,6 +106,7 @@ function EnquiryForm() {
           made: '',
           quantity: '',
           unitPrice: '',
+          sPercent: '',
           salePrice: '',
           subName: '',
           uom: '',
@@ -185,7 +188,7 @@ function EnquiryForm() {
       'Made': item.made,
       'Quantity': item.quantity,
       'Unit Price': item.unitPrice,
-      'Total': (parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0),
+      'Total': (parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0) * (1 - (parseFloat(item.sPercent) || 0) / 100),
       'Sub Name': item.subName,
       'Sale Price': item.salePrice,
       'VUM': item.uom,
@@ -220,6 +223,7 @@ function EnquiryForm() {
         quantity: parseFloat(item.quantity) || 0,
         uom: item.uom || '',
         unitPrice: parseFloat(item.unitPrice) || 0,
+        sPercent: parseFloat(item.sPercent) || 0,
         subName: item.subName || '',
         salePrice: parseFloat(item.salePrice) || 0,
       })) || []
@@ -297,7 +301,7 @@ function EnquiryForm() {
               <div className="detail-row">
                 <label>Validity:</label>
                 <input
-                  type="number"
+                  type="num"
                   value={formData.validityValue}
                   onChange={(e) => handleInputChange('validityValue', e.target.value)}
                   placeholder="30"
@@ -369,6 +373,7 @@ function EnquiryForm() {
                     <th>quantity</th>
                     <th>UOM</th>
                     <th>unit price</th>
+                    <th>s%</th>
                     <th>total</th>
                     <th>sup name</th>
                     <th>sup price</th>
@@ -405,7 +410,7 @@ function EnquiryForm() {
                       </td>
                       <td>
                         <input
-                          type="number"
+                          type="num"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
                           step="0.01"
@@ -419,24 +424,38 @@ function EnquiryForm() {
                           className="uom-select"
                         >
                           <option value="">Select UOM</option>
-                          <option value="nes">nes</option>
-                          <option value="pcts">pcts</option>
-                          <option value="pks">pks</option>
-                          <option value="ltrs">ltrs</option>
-                          <option value="roll">roll</option>
+                          <option value="nes">NOS</option>
+                          <option value="pcts">PCTS</option>
+                          <option value="pks">PKS</option>
+                          <option value="ltrs">LTRS</option>
+                          <option value="roll">ROLL</option>
                         </select>
                       </td>
                       <td>
                         <input
-                          type="number"
+                          type="num"
                           value={item.unitPrice}
                           onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
                           step="0.01"
                           placeholder="0.00"
                         />
                       </td>
+                      <td>
+                        <input
+                          type="num"
+                          value={item.sPercent}
+                          onChange={(e) => handleItemChange(index, 'sPercent', e.target.value)}
+                          step="0.01"
+                          min="0"
+                          placeholder="0"
+                        />
+                      </td>
                       <td className="total-cell">
-                        {((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0)).toFixed(2)}
+                        {(
+                          (parseFloat(item.quantity) || 0) *
+                          (parseFloat(item.unitPrice) || 0) *
+                          (1 - (parseFloat(item.sPercent) || 0) / 100)
+                        ).toFixed(2)}
                       </td>
                       <td>
                         <input
@@ -448,7 +467,7 @@ function EnquiryForm() {
                       </td>
                       <td>
                         <input
-                          type="number"
+                          type="num"
                           value={item.salePrice}
                           onChange={(e) => handleItemChange(index, 'salePrice', e.target.value)}
                           step="0.01"

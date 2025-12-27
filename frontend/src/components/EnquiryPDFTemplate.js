@@ -51,6 +51,15 @@ class EnquiryPDFTemplate {
     doc.text('Status:', boxX + 3, detailsY + 21);
     doc.text(enquiryData.status || '', boxX + 25, detailsY + 21);
 
+    // Optional Incharge and Validity
+    doc.text('Incharge:', boxX + 3, detailsY + 28);
+    doc.text(enquiryData.incharge || '', boxX + 25, detailsY + 28);
+    doc.text('Validity:', boxX + 3, detailsY + 35);
+    const validityText = enquiryData.validityValue
+      ? `${enquiryData.validityValue} ${enquiryData.validityUnit || 'days'}`
+      : (enquiryData.validity || '');
+    doc.text(validityText, boxX + 25, detailsY + 35);
+
     // Customer section
     yPosition = Math.max(yPosition, detailsY + 35);
     doc.setFont(undefined, 'bold');
@@ -67,18 +76,25 @@ class EnquiryPDFTemplate {
 
     // Items Table (match Enquiry page columns)
     const itemHeaders = ['S.No', 'Description', 'Part No', 'Made', 'Quantity', 'UOM', 'Unit Price', 'Total', 'Sub Name', 'Sub Price'];
-    const itemData = (enquiryData.items || []).map((item, index) => [
-      (index + 1).toString(),
-      item.description || '',
-      item.partNumber || '',
-      item.made || '',
-      this.formatPlainNumber(item.quantity),
-      item.uom || '',
-      `₹${this.formatNumber(item.unitPrice)}`,
-      `₹${this.formatNumber((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0))}`,
-      item.subName || '',
-      `₹${this.formatNumber(item.salePrice)}`
-    ]);
+    const itemData = (enquiryData.items || []).map((item, index) => {
+      const quantity = parseFloat(item.quantity) || 0;
+      const unitPrice = parseFloat(item.unitPrice) || 0;
+      const sPercent = parseFloat(item.sPercent) || 0;
+      const lineTotal = quantity * unitPrice * (1 - sPercent / 100);
+
+      return [
+        (index + 1).toString(),
+        item.description || '',
+        item.partNumber || '',
+        item.made || '',
+        this.formatPlainNumber(quantity),
+        item.uom || '',
+        this.formatNumber(unitPrice),
+        this.formatNumber(lineTotal),
+        item.subName || '',
+        this.formatNumber(item.salePrice)
+      ];
+    });
 
     doc.autoTable({
       startY: yPosition,
@@ -101,16 +117,16 @@ class EnquiryPDFTemplate {
         fillColor: [245, 245, 245]
       },
       columnStyles: {
-        0: { cellWidth: 12 },
-        1: { cellWidth: 40 },
-        2: { cellWidth: 22 },
-        3: { cellWidth: 18 },
-        4: { cellWidth: 18 },
-        5: { cellWidth: 18 },
-        6: { cellWidth: 20 },
-        7: { cellWidth: 20 },
-        8: { cellWidth: 20 },
-        9: { cellWidth: 20 }
+        0: { cellWidth: 10 },
+        1: { cellWidth: 33 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 15 },
+        4: { cellWidth: 15 },
+        5: { cellWidth: 15 },
+        6: { cellWidth: 16 },
+        7: { cellWidth: 16 },
+        8: { cellWidth: 16 },
+        9: { cellWidth: 16 }
       }
     });
 
@@ -118,13 +134,17 @@ class EnquiryPDFTemplate {
 
     // Total Amount section (no GST for enquiry)
     const totalAmount = (enquiryData.items || []).reduce((sum, item) => {
-      return sum + ((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0));
+      const quantity = parseFloat(item.quantity) || 0;
+      const unitPrice = parseFloat(item.unitPrice) || 0;
+      const sPercent = parseFloat(item.sPercent) || 0;
+      const lineTotal = quantity * unitPrice * (1 - sPercent / 100);
+      return sum + lineTotal;
     }, 0);
 
     doc.setFont(undefined, 'bold');
     doc.setFontSize(10);
     doc.text('Total Amount', pageWidth - 55, yPosition);
-    doc.text(`₹${this.formatNumber(totalAmount)}`, pageWidth - 15, yPosition, { align: 'right' });
+    doc.text(this.formatNumber(totalAmount), pageWidth - 15, yPosition, { align: 'right' });
 
     // Footer
     const footerY = pageHeight - 15;
