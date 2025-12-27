@@ -29,29 +29,31 @@
 .pdf-button {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
   font-size: 0.9rem;
-  transition: background 0.3s;
+  transition: all 0.2s;
 }
 
 .back-button {
-  background: #95a5a6;
+  background: #64748b;
   color: white;
 }
 
 .back-button:hover {
-  background: #7f8c8d;
+  background: #475569;
+  transform: translateY(-1px);
 }
 
 .pdf-button {
-  background: #e74c3c;
+  background: #dc2626;
   color: white;
 }
 
 .pdf-button:hover {
-  background: #c0392b;
+  background: #b91c1c;
+  transform: translateY(-1px);
 }
 
 .quotation-detail-content {

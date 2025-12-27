@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import { QuotationPDFTemplate } from './QuotationPDFTemplate';
 import './PurchaseDetail.css';
@@ -7,17 +8,8 @@ import './PurchaseDetail.css';
 function PurchaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    enquiryNumber: '',
-    date: '',
-    customerName: '',
-    status: 'Draft',
-    items: [],
-  });
-  const [user] = useState(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
-  });
+  const { user } = useAuth();
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     if (user?.id && id) {
@@ -27,6 +19,14 @@ function PurchaseDetail() {
       }
     }
   }, [id, user]);
+
+  if (!formData) {
+    return (
+      <div className="purchase-detail-container">
+        <p>Loading purchase details...</p>
+      </div>
+    );
+  }
 
   const handlePDFExport = () => {
     const purchaseData = {
@@ -38,13 +38,13 @@ function PurchaseDetail() {
       quotationDate: new Date(formData.date || Date.now()),
       validityDays: '30 Days',
       billTo: {
-        name: formData.customerName || 'Customer Name',
-        address: 'Customer Address',
+        name: formData.customer?.name || formData.customerName || 'Customer Name',
+        address: formData.customer?.address || 'Customer Address',
         city: ''
       },
       shipTo: {
-        name: formData.customerName || 'Customer Name',
-        address: 'Customer Address',
+        name: formData.customer?.name || formData.customerName || 'Customer Name',
+        address: formData.customer?.address || 'Customer Address',
         city: ''
       },
       placeOfDelivery: 'To your factory',
@@ -90,7 +90,7 @@ function PurchaseDetail() {
           <div className="info-section">
             <h3>Purchase Details</h3>
             <p>
-              <strong>Purchase Number:</strong> {formData.enquiryNumber}
+              <strong>Enquiry Number:</strong> {formData.enquiryNumber}
             </p>
             <p>
               <strong>Date:</strong> {new Date(formData.date).toLocaleDateString()}
@@ -102,7 +102,7 @@ function PurchaseDetail() {
           <div className="info-section">
             <h3>Customer Information</h3>
             <p>
-              <strong>Name:</strong> {formData.customerName}
+              <strong>Name:</strong> {formData.customer?.name || formData.customerName || 'N/A'}
             </p>
           </div>
         </div>

@@ -54,7 +54,7 @@ function PurchaseList() {
         <table className="purchase-table">
           <thead>
             <tr>
-              <th>Purchase Number</th>
+              <th>Enquiry Number</th>
               <th>Date</th>
               <th>Customer</th>
               <th>Status</th>

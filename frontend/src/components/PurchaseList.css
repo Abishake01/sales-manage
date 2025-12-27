@@ -25,7 +25,7 @@
 }
 
 .purchase-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
 }
 
 .purchase-table th {
@@ -72,25 +72,27 @@
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 500;
-  transition: background 0.3s;
+  transition: all 0.2s;
 }
 
 .view-btn {
-  background: #667eea;
+  background: #2563eb;
   color: white;
 }
 
 .view-btn:hover {
-  background: #5568d3;
+  background: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .delete-btn {
-  background: #e74c3c;
+  background: #dc2626;
   color: white;
 }
 
 .delete-btn:hover {
-  background: #c0392b;
+  background: #b91c1c;
+  transform: translateY(-1px);
 }
 
 .no-data {
