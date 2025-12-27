@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
-import { QuotationPDFTemplate } from './QuotationPDFTemplate';
+import { PurchasePDFTemplate } from './PurchasePDFTemplate';
 import './PurchaseDetail.css';
 
 function PurchaseDetail() {
@@ -34,8 +34,8 @@ function PurchaseDetail() {
       companyAddress: 'Your Company Address Here',
       companyEmail: 'info@example.com',
       companyPhone: '+91-XXXXXXXXXX',
-      quotationNo: formData.enquiryNumber || formData.engagementNumber || 'PO-' + Date.now(),
-      quotationDate: new Date(formData.date || Date.now()),
+      purchaseNo: formData.enquiryNumber || formData.engagementNumber || 'PO-' + Date.now(),
+      purchaseDate: new Date(formData.date || Date.now()),
       validityDays: '30 Days',
       billTo: {
         name: formData.customer?.name || formData.customerName || 'Customer Name',
@@ -54,16 +54,13 @@ function PurchaseDetail() {
         description: item.description || '',
         model: item.partNumber || '',
         make: item.made || '',
-        hsn: item.hsn || '',
-        moq: item.moq || '',
-        uom: item.uom || 'Nos',
-        unitPrice: parseFloat(item.salePrice) || 0,
-        quantity: parseFloat(item.quantity) || 0
+        quantity: parseFloat(item.quantity) || 0,
+        subPrice: parseFloat(item.salePrice) || 0
       })) || [],
       notes: 'GST 18% Extra. This purchase order is valid for 30 days.'
     };
 
-    const doc = QuotationPDFTemplate.generatePDF(purchaseData);
+    const doc = PurchasePDFTemplate.generatePDF(purchaseData);
     doc.save(`PurchaseOrder_${formData.enquiryNumber || 'export'}.pdf`);
   };
 

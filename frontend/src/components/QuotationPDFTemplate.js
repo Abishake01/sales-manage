@@ -203,20 +203,20 @@ class QuotationPDFTemplate {
 
     doc.setFont(undefined, 'bold');
     doc.setFontSize(10);
-    doc.text('G.TOTAL', pageWidth - 50, yPosition);
-    doc.text(`₹ ${totalAmount.toFixed(2)}`, pageWidth - 20, yPosition, { align: 'right' });
+    doc.text('Total Amount', pageWidth - 55, yPosition);
+    doc.text(`₹${totalAmount.toFixed(2)}`, pageWidth - 15, yPosition, { align: 'right' });
     yPosition += 8;
 
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
-    doc.text('GST (18%)', pageWidth - 50, yPosition);
-    doc.text(`₹ ${gstAmount.toFixed(2)}`, pageWidth - 20, yPosition, { align: 'right' });
+    doc.text('GST (18%)', pageWidth - 55, yPosition);
+    doc.text(`₹${gstAmount.toFixed(2)}`, pageWidth - 15, yPosition, { align: 'right' });
     yPosition += 8;
 
     doc.setFont(undefined, 'bold');
     doc.setFontSize(10);
-    doc.text('GRAND TOTAL', pageWidth - 50, yPosition);
-    doc.text(`₹ ${grandTotal.toFixed(2)}`, pageWidth - 20, yPosition, { align: 'right' });
+    doc.text('GRAND TOTAL', pageWidth - 55, yPosition);
+    doc.text(`₹${grandTotal.toFixed(2)}`, pageWidth - 15, yPosition, { align: 'right' });
     yPosition += 15;
 
     // Terms and conditions
