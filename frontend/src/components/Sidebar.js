@@ -38,6 +38,12 @@ function Sidebar() {
         >
           🛒 Purchase
         </button>
+        <button
+          className={`sidebar-item ${isActive('/settings') ? 'active' : ''}`}
+          onClick={() => navigate('/settings')}
+        >
+          ⚙️ Settings
+        </button>
       </nav>
     </div>
   );

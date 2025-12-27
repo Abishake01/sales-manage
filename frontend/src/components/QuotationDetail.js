@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import { QuotationPDFTemplate } from './QuotationPDFTemplate';
+import { getProfile, defaultProfile } from '../services/profileService';
 import './QuotationDetail.css';
 
 function QuotationDetail() {
@@ -12,6 +13,7 @@ function QuotationDetail() {
   const { user } = useAuth();
   const [formData, setFormData] = useState(location.state?.quotation || null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [companyProfile, setCompanyProfile] = useState(defaultProfile);
 
   useEffect(() => {
     if (!formData && user) {
@@ -21,6 +23,15 @@ function QuotationDetail() {
       }
     }
   }, [id, user, formData]);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+      const profile = await getProfile(user.id);
+      setCompanyProfile(profile);
+    };
+    loadProfile();
+  }, [user]);
 
   useEffect(() => {
     if (formData?.items) {
@@ -39,10 +50,10 @@ function QuotationDetail() {
 
   const handlePDFExport = () => {
     const quotationData = {
-      companyName: 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
-      companyAddress: 'Your Company Address Here',
-      companyEmail: 'info@example.com',
-      companyPhone: '+91-XXXXXXXXXX',
+      companyName: companyProfile.companyName || 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
+      companyAddress: companyProfile.address || 'Your Company Address Here',
+      companyEmail: companyProfile.email || 'info@example.com',
+      companyPhone: companyProfile.phone || '+91-XXXXXXXXXX',
          quotationNo: formData.enquiryNumber || formData.engagementNumber || 'Q-' + Date.now(),
       quotationDate: new Date(formData.date || Date.now()),
       validityDays: '30 Days',

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import { PurchasePDFTemplate } from './PurchasePDFTemplate';
+import { getProfile, defaultProfile } from '../services/profileService';
 import './PurchaseDetail.css';
 
 function PurchaseDetail() {
@@ -10,6 +11,7 @@ function PurchaseDetail() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [formData, setFormData] = useState(null);
+  const [companyProfile, setCompanyProfile] = useState(defaultProfile);
 
   useEffect(() => {
     if (user?.id && id) {
@@ -19,6 +21,15 @@ function PurchaseDetail() {
       }
     }
   }, [id, user]);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+      const profile = await getProfile(user.id);
+      setCompanyProfile(profile);
+    };
+    loadProfile();
+  }, [user]);
 
   if (!formData) {
     return (
@@ -30,10 +41,10 @@ function PurchaseDetail() {
 
   const handlePDFExport = () => {
     const purchaseData = {
-      companyName: 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
-      companyAddress: 'Your Company Address Here',
-      companyEmail: 'info@example.com',
-      companyPhone: '+91-XXXXXXXXXX',
+      companyName: companyProfile.companyName || 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
+      companyAddress: companyProfile.address || 'Your Company Address Here',
+      companyEmail: companyProfile.email || 'info@example.com',
+      companyPhone: companyProfile.phone || '+91-XXXXXXXXXX',
       purchaseNo: formData.enquiryNumber || formData.engagementNumber || 'PO-' + Date.now(),
       purchaseDate: new Date(formData.date || Date.now()),
       validityDays: '30 Days',

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { storageService } from '../services/storageService';
 import * as XLSX from 'xlsx';
 import { EnquiryPDFTemplate } from './EnquiryPDFTemplate';
+import { getProfile, defaultProfile } from '../services/profileService';
 import './EnquiryForm.css';
 
 function EnquiryForm() {
@@ -32,6 +33,7 @@ function EnquiryForm() {
   });
 
   const [totalAmount, setTotalAmount] = useState(0);
+  const [companyProfile, setCompanyProfile] = useState(defaultProfile);
 
   useEffect(() => {
     if (!isNew && user) {
@@ -41,6 +43,15 @@ function EnquiryForm() {
       }
     }
   }, [id, isNew, user]);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+      const profile = await getProfile(user.id);
+      setCompanyProfile(profile);
+    };
+    loadProfile();
+  }, [user]);
 
   useEffect(() => {
     // Calculate total amount whenever items change (apply s% discount per line)
@@ -202,10 +213,10 @@ function EnquiryForm() {
 
   const handlePDFExport = () => {
     const enquiryData = {
-      companyName: 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
-      companyAddress: 'Your Company Address Here',
-      companyEmail: 'info@example.com',
-      companyPhone: '+91-XXXXXXXXXX',
+      companyName: companyProfile.companyName || 'TUSIJI SPRITI INDIA PRIVATE LIMITED',
+      companyAddress: companyProfile.address || 'Your Company Address Here',
+      companyEmail: companyProfile.email || 'info@example.com',
+      companyPhone: companyProfile.phone || '+91-XXXXXXXXXX',
       enquiryNo: formData.enquiryNumber || formData.engagementNumber || 'ENQ-' + Date.now(),
       enquiryDate: new Date(formData.date || Date.now()),
       status: formData.status || 'pending',
@@ -267,8 +278,8 @@ function EnquiryForm() {
           {/* Top Section: Company Info and Engagement Details */}
           <div className="top-section">
             <div className="company-box">
-              <div className="company-name">Company name</div>
-              <div className="company-address">Address</div>
+              <div className="company-name">{companyProfile.companyName || 'Company name'}</div>
+              <div className="company-address">{companyProfile.address || 'Address'}</div>
             </div>
             
             <div className="engagement-details">

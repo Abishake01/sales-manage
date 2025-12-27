@@ -8,6 +8,7 @@ import QuotationList from './components/QuotationList';
 import QuotationDetail from './components/QuotationDetail';
 import PurchaseList from './components/PurchaseList';
 import PurchaseDetail from './components/PurchaseDetail';
+import Settings from './components/Settings';
 import Sidebar from './components/Sidebar';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
@@ -42,6 +43,7 @@ function AppRoutes() {
           <Route path="/quotation/:id" element={<QuotationDetail />} />
           <Route path="/purchase" element={<PurchaseList />} />
           <Route path="/purchase/:id" element={<PurchaseDetail />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>
